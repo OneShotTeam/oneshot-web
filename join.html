@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>OneShot · Join Event</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#100C0A;--surface:#1C1713;--gold:#E7B45A;--ink:#F6F0E6;--ink60:rgba(246,240,230,.6);--ink25:rgba(246,240,230,.25);--line:rgba(246,240,230,.08)}
+body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
+.cover{position:relative;height:50vh;min-height:220px;background:linear-gradient(135deg,#1C1713,#2a1c12);background-size:cover;background-position:center}
+.cover-dim{position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.1) 0%,rgba(16,12,10,.96) 100%)}
+.cover-info{position:absolute;bottom:0;left:0;right:0;padding:20px 22px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.ename{font-size:27px;font-weight:800;letter-spacing:-.5px;line-height:1.15;margin-bottom:3px;font-style:italic}
+.esub{font-size:13.5px;color:var(--ink60)}
+.body{flex:1;padding:20px 20px 52px;display:flex;flex-direction:column;gap:10px}
+.meta-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:2px}
+.pill{display:inline-flex;align-items:center;gap:5px;height:30px;padding:0 11px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--ink60)}
+.pill b{color:var(--ink)}
+.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:54px;border-radius:999px;font-size:16px;font-weight:700;text-decoration:none;cursor:pointer;border:none;transition:opacity .15s;letter-spacing:-.2px;-webkit-tap-highlight-color:transparent}
+.btn:active{opacity:.78}
+.btn-gold{background:var(--gold);color:var(--bg)}
+.btn-surface{background:var(--surface);color:var(--ink);border:1px solid rgba(246,240,230,.12)}
+.divider{display:flex;align-items:center;gap:12px;color:var(--ink25);font-size:11px;letter-spacing:.8px;text-transform:uppercase;margin:2px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--line)}
+.logo{margin-top:auto;padding-top:28px;display:flex;align-items:center;justify-content:center;gap:8px;opacity:.38}
+.logo-dot{width:24px;height:24px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:12px}
+.logo-word{font-size:14px;font-weight:800;letter-spacing:-.3px}
+.logo-word span{color:var(--gold)}
+#loader{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--bg)}
+.spinner{width:28px;height:28px;border:2.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+#loader p{font-size:13px;color:var(--ink60)}
+.hidden{display:none!important}
+#err{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;text-align:center;padding:24px;background:var(--bg)}
+</style>
+</head>
+<body>
+
+<div id="loader">
+  <div class="spinner"></div>
+  <p>Loading event…</p>
+</div>
+
+<div id="err" class="hidden">
+  <div style="font-size:46px">📷</div>
+  <div style="font-size:20px;font-weight:800">Event not found</div>
+  <div style="font-size:13.5px;color:var(--ink60)">This QR code may have expired or been removed.</div>
+</div>
+
+<div id="main" class="hidden" style="display:flex;flex-direction:column;flex:1;min-height:100dvh">
+  <div class="cover" id="cover">
+    <div class="cover-dim"></div>
+    <div class="cover-info">
+      <div class="eyebrow">📸 OneShot</div>
+      <div class="ename" id="ename">—</div>
+      <div class="esub" id="esub"></div>
+    </div>
+  </div>
+
+  <div class="body">
+    <div class="meta-row" id="meta-row"></div>
+
+    <a class="btn btn-gold" id="app-btn" href="#">Open in OneShot App →</a>
+
+    <div class="divider">or</div>
+
+    <button class="btn btn-surface" id="web-btn">Continue on Web</button>
+
+    <div class="logo">
+      <div class="logo-dot">📷</div>
+      <div class="logo-word">One<span>Shot</span></div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
+
+(async function init() {
+  const slug = new URLSearchParams(location.search).get('slug');
+  if (!slug) { showErr(); return; }
+
+  try {
+    const r = await fetch(
+      `${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=name,subtitle,cover_url,status,ends_at,photos_per_person&limit=1`,
+      { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } }
+    );
+    const [ev] = await r.json();
+    if (!ev) { showErr(); return; }
+
+    document.getElementById('ename').textContent = ev.name;
+    if (ev.subtitle) document.getElementById('esub').textContent = ev.subtitle;
+    if (ev.cover_url) document.getElementById('cover').style.backgroundImage = `url('${ev.cover_url}')`;
+
+    const ends = new Date(ev.ends_at).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false });
+    document.getElementById('meta-row').innerHTML =
+      `<div class="pill">${ev.status === 'live' ? '🟡 Live' : '⏹ Ended'}</div>` +
+      `<div class="pill">Ends <b>${ends}</b></div>` +
+      `<div class="pill">📷 <b>${ev.photos_per_person}</b> shots/person</div>`;
+
+    document.getElementById('app-btn').href = `oneshot://join/${slug}`;
+    document.getElementById('web-btn').onclick = () => {
+      location.href = `auth.html?slug=${encodeURIComponent(slug)}&name=${encodeURIComponent(ev.name)}`;
+    };
+
+    document.getElementById('loader').classList.add('hidden');
+    const main = document.getElementById('main');
+    main.classList.remove('hidden');
+    main.style.display = 'flex';
+  } catch (e) {
+    showErr();
+  }
+})();
+
+function showErr() {
+  document.getElementById('loader').classList.add('hidden');
+  const el = document.getElementById('err');
+  el.classList.remove('hidden');
+  el.style.display = 'flex';
+}
+</script>
+</body>
+</html>
