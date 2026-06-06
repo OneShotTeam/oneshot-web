@@ -130,13 +130,15 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
     return;
   }
 
+  console.log('[oneshot] register response:', JSON.stringify(regData));
+
   if (regData.error) {
     setLoaderMsg('Error: ' + regData.error);
     return;
   }
 
   userId    = regData.user_id;
-  shotsLeft = regData.shots_remaining;
+  shotsLeft = regData.shots_remaining ?? regData.shots_left ?? regData.shotsRemaining ?? 0;
 
   try {
     const r = await fetch(
@@ -204,6 +206,7 @@ async function upload() {
   setStatus('Uploading your photo…', 'info');
 
   const fd = new FormData();
+  fd.append('action',  'upload');
   fd.append('slug',    slug);
   fd.append('user_id', userId);
   fd.append('photo',   file, 'photo.jpg');
@@ -211,6 +214,7 @@ async function upload() {
   try {
     const r    = await fetch(EDGE, { method: 'POST', body: fd });
     const data = await r.json();
+    console.log('[oneshot] upload response:', JSON.stringify(data));
 
     if (data.success) {
       shotsLeft--;
@@ -234,7 +238,7 @@ async function upload() {
         setStatus('');
       }, 1400);
     } else {
-      setStatus('Error: ' + (data.error || 'Upload failed'), 'err');
+      setStatus('Error: ' + (data.error || data.message || JSON.stringify(data)), 'err');
       uploadBtn.disabled = false;
       uploadBtn.textContent = 'Upload Photo →';
       pickBtn.disabled = false;
