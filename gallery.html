@@ -109,16 +109,10 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
 const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
 
-/* ── Adjust these if your Supabase schema differs ───────────────
-   PHOTOS_TABLE : table holding uploaded photos
-   STORAGE_BUCKET: public bucket name (used only when a row stores a
-                   storage *path* instead of a full URL)               */
-const PHOTOS_TABLE   = 'photos';
-const STORAGE_BUCKET = 'photos';
-/* Candidate columns checked in order (first that exists wins). */
-const LINK_COLS  = ['event_id', 'event', 'event_slug', 'slug'];
-const URL_COLS   = ['url', 'image_url', 'photo_url', 'public_url', 'signed_url', 'path', 'storage_path'];
-const NAME_COLS  = ['guest_name', 'name', 'uploader_name', 'author'];
+/* Photos live in a PRIVATE bucket, so they're fetched through the join
+   edge function's `gallery` action: it runs with the service role, checks
+   the event has ended, and returns short-lived signed URLs + uploader name. */
+const EDGE = `${SUPA}/functions/v1/join`;
 
 const hdrs = { apikey: ANON, Authorization: 'Bearer ' + ANON };
 const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.getItem('lahza_slug') || '';
@@ -161,31 +155,17 @@ function isEnded(ev) {
 }
 
 async function loadPhotos(ev) {
-  for (const col of LINK_COLS) {
-    const val = (col === 'event_id' || col === 'event') ? ev.id : slug;
-    if (val == null) continue;
-    try {
-      const r = await fetch(
-        `${SUPA}/rest/v1/${PHOTOS_TABLE}?${col}=eq.${encodeURIComponent(val)}&select=*&order=created_at.asc`,
-        { headers: hdrs }
-      );
-      if (!r.ok) continue;                 // 400 = wrong column, try next
-      const rows = await r.json();
-      return rows.map(toPhoto).filter(p => p.url);
-    } catch (_) {}
-  }
-  return [];
-}
-
-function toPhoto(row) {
-  let raw = '';
-  for (const c of URL_COLS) { if (row[c]) { raw = row[c]; break; } }
-  const url = /^https?:\/\//.test(raw)
-    ? raw
-    : (raw ? `${SUPA}/storage/v1/object/public/${STORAGE_BUCKET}/${raw.replace(/^\/+/, '')}` : '');
-  let by = '';
-  for (const c of NAME_COLS) { if (row[c]) { by = row[c]; break; } }
-  return { url, by };
+  const fd = new FormData();
+  fd.append('action', 'gallery');
+  fd.append('slug', slug);
+  try {
+    const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method: 'POST', headers: hdrs, body: fd });
+    const data = await r.json();
+    if (!data || !Array.isArray(data.photos)) return [];
+    return data.photos
+      .map(p => ({ url: p.url, by: p.by || '' }))
+      .filter(p => p.url);
+  } catch (_) { return []; }
 }
 
 function renderGrid(photos) {
