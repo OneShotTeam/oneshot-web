@@ -9,19 +9,24 @@
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#100C0A;--surface:#1C1713;--gold:#E7B45A;--ink:#F6F0E6;--ink60:rgba(246,240,230,.6);--ink25:rgba(246,240,230,.25);--line:rgba(246,240,230,.08)}
 body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
+/* Header */
 .header{display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top,14px) 20px 14px;padding-top:max(env(safe-area-inset-top),14px)}
 .header-logo{font-size:16px;font-weight:800;letter-spacing:-.3px}
 .header-logo span{color:var(--gold)}
 .shot-badge{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--gold)}
+/* Main area */
 .main{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;gap:16px}
 .event-name{font-size:18px;font-weight:800;font-style:italic;text-align:center;letter-spacing:-.3px;color:var(--ink60)}
+/* Photo frame */
 .frame-wrap{width:100%;max-width:360px;position:relative}
 .frame{width:100%;aspect-ratio:3/4;background:var(--surface);border-radius:20px;overflow:hidden;position:relative;border:1.5px solid var(--line);cursor:pointer;-webkit-tap-highlight-color:transparent}
 .frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;filter:contrast(1.08) saturate(0.85) sepia(0.12)}
 .frame-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none}
 .camera-icon{font-size:44px;opacity:.35}
 .frame-hint{font-size:14px;color:var(--ink25);text-align:center;line-height:1.5;padding:0 20px}
+/* Grain overlay */
 .grain{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
+/* Buttons */
 .actions{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
 .btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:54px;border-radius:999px;font-size:16px;font-weight:700;cursor:pointer;border:none;transition:opacity .15s;letter-spacing:-.2px;-webkit-tap-highlight-color:transparent;user-select:none}
 .btn:active{opacity:.75}
@@ -29,14 +34,17 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
 .btn-gold{background:var(--gold);color:var(--bg)}
 .btn-surface{background:var(--surface);color:var(--ink);border:1px solid rgba(246,240,230,.12)}
 input[type=file]{display:none}
+/* Status */
 .status{text-align:center;font-size:13.5px;min-height:20px;padding:0 8px}
 .status.ok{color:#4ade80}
 .status.err{color:#f87171}
 .status.info{color:var(--ink60)}
+/* Done state */
 .done-card{text-align:center;padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:12px}
 .done-icon{font-size:52px}
 .done-title{font-size:21px;font-weight:800}
 .done-sub{font-size:14px;color:var(--ink60);line-height:1.55}
+/* Loader screen */
 #loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:99}
 .spinner{width:28px;height:28px;border:2.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
@@ -101,11 +109,7 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
     return;
   }
 
-  if (new URLSearchParams(location.search).get('from') !== 'auth') {
-    location.replace('auth.html?slug=' + encodeURIComponent(slug));
-    return;
-  }
-
+  // Check auth session
   let session = null;
   try {
     const { data } = await sb.auth.getSession();
@@ -117,6 +121,7 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
     return;
   }
 
+  // Register with event via edge function
   const meta = session.user.user_metadata || {};
   const name = meta.full_name || meta.name || (session.user.email || '').split('@')[0] || 'Guest';
 
@@ -128,14 +133,14 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
 
   let regData;
   try {
-    const r = await fetch(EDGE, { method: 'POST', body: fd });
+    const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method: 'POST', body: fd });
     regData = await r.json();
   } catch (e) {
     setLoaderMsg('Connection error. Please check your internet and try again.');
     return;
   }
 
-  console.log('[oneshot] register response:', JSON.stringify(regData));
+  console.log('[OneShot] register response:', regData);
 
   if (regData.error) {
     setLoaderMsg('Error: ' + regData.error);
@@ -143,8 +148,11 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
   }
 
   userId    = regData.user_id;
-  shotsLeft = regData.shots_remaining ?? regData.shots_left ?? regData.shotsRemaining ?? 0;
+  shotsLeft = typeof regData.shots_remaining === 'number' ? regData.shots_remaining : 0;
+  const shotsLimit = regData.shots_limit ?? 10;
+  const shotsUsed  = regData.shots_used  ?? 0;
 
+  // Fetch event name
   try {
     const r = await fetch(
       `${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=name&limit=1`,
@@ -158,7 +166,8 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
   updateShotBadge();
 
   if (shotsLeft <= 0) {
-    showDone(true);
+    // If they used all shots previously — show specific message
+    showDone(shotsUsed >= shotsLimit);
   } else {
     showApp();
   }
@@ -196,6 +205,7 @@ function onPick(e) {
     setStatus('');
   };
   reader.readAsDataURL(file);
+  // Reset file input so same file can be re-selected
   e.target.value = '';
 }
 
@@ -211,15 +221,13 @@ async function upload() {
   setStatus('Uploading your photo…', 'info');
 
   const fd = new FormData();
-  fd.append('action',  'upload');
   fd.append('slug',    slug);
   fd.append('user_id', userId);
   fd.append('photo',   file, 'photo.jpg');
 
   try {
-    const r    = await fetch(EDGE, { method: 'POST', body: fd });
+    const r    = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method: 'POST', body: fd });
     const data = await r.json();
-    console.log('[oneshot] upload response:', JSON.stringify(data));
 
     if (data.success) {
       shotsLeft--;
@@ -231,6 +239,7 @@ async function upload() {
         return;
       }
 
+      // Reset for next photo
       setTimeout(() => {
         file = null;
         document.getElementById('preview').style.display = 'none';
@@ -243,7 +252,7 @@ async function upload() {
         setStatus('');
       }, 1400);
     } else {
-      setStatus('Error: ' + (data.error || data.message || JSON.stringify(data)), 'err');
+      setStatus('Error: ' + (data.error || 'Upload failed'), 'err');
       uploadBtn.disabled = false;
       uploadBtn.textContent = 'Upload Photo →';
       pickBtn.disabled = false;
@@ -265,11 +274,11 @@ function showDone(limitReached) {
   document.querySelector('.frame-wrap').style.display = 'none';
   document.getElementById('actions').innerHTML = `
     <div class="done-card">
-      <div class="done-icon">${limitReached ? '🎞' : '✨'}</div>
-      <div class="done-title">${limitReached ? 'All shots used!' : 'All done!'}</div>
+      <div class="done-icon">🎞</div>
+      <div class="done-title">${limitReached ? 'All shots used!' : 'No shots remaining'}</div>
       <div class="done-sub">${limitReached
         ? 'You\'ve used all your shots for this event. Check the gallery to see everyone\'s photos!'
-        : 'Your photos are in the gallery. Thanks for capturing the moment!'
+        : 'You have no shots left for this event.'
       }</div>
     </div>`;
   setStatus('');
