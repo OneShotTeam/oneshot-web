@@ -79,7 +79,7 @@ const ename = params.get('name') || sessionStorage.getItem('oneshot_name') || ''
     if (session) {
       const dest = sessionStorage.getItem('oneshot_slug') || slug;
       if (dest) {
-        location.replace('camera.html?slug=' + encodeURIComponent(dest));
+        location.replace('camera.html?slug=' + encodeURIComponent(dest) + '&from=auth');
       } else {
         showSignIn();
       }
@@ -102,7 +102,7 @@ async function signIn(provider) {
   try {
     await sb.auth.signInWithOAuth({
       provider,
-      options: { redirectTo: location.origin + '/auth.html' }
+      options: { redirectTo: location.origin + '/auth.html' + (slug ? '?slug=' + encodeURIComponent(slug) : '') }
     });
   } catch (e) {
     btns.forEach(b => b.disabled = false);

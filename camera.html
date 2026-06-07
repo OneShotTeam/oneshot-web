@@ -101,6 +101,11 @@ const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.
     return;
   }
 
+  if (new URLSearchParams(location.search).get('from') !== 'auth') {
+    location.replace('auth.html?slug=' + encodeURIComponent(slug));
+    return;
+  }
+
   let session = null;
   try {
     const { data } = await sb.auth.getSession();
