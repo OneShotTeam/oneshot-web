@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>OneShot · Join Event</title>
+<title>Lahza · Join Event</title>
+<meta name="theme-color" content="#100C0A">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{--bg:#100C0A;--surface:#1C1713;--gold:#E7B45A;--ink:#F6F0E6;--ink60:rgba(246,240,230,.6);--ink25:rgba(246,240,230,.25);--line:rgba(246,240,230,.08)}
@@ -53,7 +55,7 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   <div class="cover" id="cover">
     <div class="cover-dim"></div>
     <div class="cover-info">
-      <div class="eyebrow">📸 OneShot</div>
+      <div class="eyebrow">📸 Lahza</div>
       <div class="ename" id="ename">—</div>
       <div class="esub" id="esub"></div>
     </div>
@@ -62,7 +64,7 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   <div class="body">
     <div class="meta-row" id="meta-row"></div>
 
-    <a class="btn btn-gold" id="app-btn" href="#">Open in OneShot App →</a>
+    <a class="btn btn-gold" id="app-btn" href="#">Open in Lahza App →</a>
 
     <div class="divider">or</div>
 
@@ -70,7 +72,7 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
 
     <div class="logo">
       <div class="logo-dot">📷</div>
-      <div class="logo-word">One<span>Shot</span></div>
+      <div class="logo-word">Lah<span>za</span></div>
     </div>
   </div>
 </div>
@@ -101,7 +103,7 @@ const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
       `<div class="pill">Ends <b>${ends}</b></div>` +
       `<div class="pill">📷 <b>${ev.photos_per_person}</b> shots/person</div>`;
 
-    document.getElementById('app-btn').href = `oneshot://join/${slug}`;
+    document.getElementById('app-btn').href = `lahza://join/${slug}`;
     document.getElementById('web-btn').onclick = () => {
       location.href = `auth.html?slug=${encodeURIComponent(slug)}&name=${encodeURIComponent(ev.name)}`;
     };

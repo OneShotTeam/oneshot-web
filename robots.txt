@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /auth.html
+Disallow: /camera.html
+
+Sitemap: https://lahza.site/sitemap.xml

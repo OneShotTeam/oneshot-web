@@ -3,7 +3,9 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Sign In · OneShot</title>
+<title>Sign In · Lahza</title>
+<meta name="theme-color" content="#100C0A">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -58,7 +60,7 @@ h1{font-size:23px;font-weight:800;letter-spacing:-.5px;text-align:center}
       Continue with Apple
     </button>
   </div>
-  <p class="note">By continuing you agree to share your photos in the event gallery. We only use your account to link your contributions.</p>
+  <p class="note">By continuing you agree to share your photos in the event gallery and accept our <a href="terms.html" style="color:var(--ink60);text-decoration:underline">Terms</a> &amp; <a href="privacy.html" style="color:var(--ink60);text-decoration:underline">Privacy Policy</a>. We only use your account to link your contributions.</p>
 </div>
 
 <script>
@@ -67,17 +69,17 @@ const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
 const sb = supabase.createClient(SUPA, ANON);
 
 const params = new URLSearchParams(location.search);
-const slug  = params.get('slug') || sessionStorage.getItem('oneshot_slug') || '';
-const ename = params.get('name') || sessionStorage.getItem('oneshot_name') || '';
+const slug  = params.get('slug') || sessionStorage.getItem('lahza_slug') || '';
+const ename = params.get('name') || sessionStorage.getItem('lahza_name') || '';
 
 (async function init() {
-  if (params.get('slug')) sessionStorage.setItem('oneshot_slug', slug);
-  if (params.get('name')) sessionStorage.setItem('oneshot_name', ename);
+  if (params.get('slug')) sessionStorage.setItem('lahza_slug', slug);
+  if (params.get('name')) sessionStorage.setItem('lahza_name', ename);
 
   try {
     const { data: { session } } = await sb.auth.getSession();
     if (session) {
-      const dest = sessionStorage.getItem('oneshot_slug') || slug;
+      const dest = sessionStorage.getItem('lahza_slug') || slug;
       if (dest) {
         location.replace('camera.html?slug=' + encodeURIComponent(dest) + '&from=auth');
       } else {

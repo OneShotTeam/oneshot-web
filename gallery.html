@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Gallery · Lahza</title>
+<meta name="theme-color" content="#100C0A">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#100C0A;--surface:#1C1713;--gold:#E7B45A;--ink:#F6F0E6;--ink60:rgba(246,240,230,.6);--ink25:rgba(246,240,230,.25);--line:rgba(246,240,230,.08)}
+body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;overflow-x:hidden}
+.header{display:flex;align-items:center;justify-content:space-between;padding:max(env(safe-area-inset-top),14px) 20px 14px;position:sticky;top:0;background:rgba(16,12,10,.82);backdrop-filter:saturate(140%) blur(14px);z-index:10;border-bottom:1px solid var(--line)}
+.header-logo{font-size:16px;font-weight:800;letter-spacing:-.3px}
+.header-logo span{color:var(--gold)}
+.count-badge{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--gold)}
+.title-block{padding:22px 20px 8px;text-align:center}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:1.4px;text-transform:uppercase;color:var(--gold);margin-bottom:6px}
+.ename{font-size:25px;font-weight:800;font-style:italic;letter-spacing:-.5px;line-height:1.15}
+.esub{font-size:13.5px;color:var(--ink60);margin-top:4px}
+/* Masonry grid */
+.grid{columns:2;column-gap:8px;padding:16px 12px calc(40px + env(safe-area-inset-bottom));max-width:760px;margin:0 auto}
+@media(min-width:560px){.grid{columns:3}}
+.tile{break-inside:avoid;margin-bottom:8px;border-radius:14px;overflow:hidden;background:var(--surface);position:relative;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.tile img{display:block;width:100%;height:auto;filter:contrast(1.06) saturate(.88) sepia(.1)}
+.tile-by{position:absolute;left:0;right:0;bottom:0;padding:18px 10px 8px;font-size:11px;font-weight:600;color:#fff;background:linear-gradient(transparent,rgba(0,0,0,.6));opacity:0;transition:opacity .2s}
+.tile:active .tile-by,.tile:hover .tile-by{opacity:1}
+/* States */
+.state{min-height:70dvh;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:32px 28px}
+.state-icon{font-size:54px}
+.state-title{font-size:22px;font-weight:800;letter-spacing:-.4px}
+.state-sub{font-size:14px;color:var(--ink60);line-height:1.6;max-width:300px}
+.countdown{display:flex;gap:10px;margin-top:8px}
+.cd-cell{background:var(--surface);border:1px solid var(--line);border-radius:14px;min-width:62px;padding:12px 8px}
+.cd-num{font-size:26px;font-weight:800;color:var(--gold);font-variant-numeric:tabular-nums;line-height:1}
+.cd-lbl{font-size:10px;letter-spacing:1px;text-transform:uppercase;color:var(--ink25);margin-top:6px}
+.spinner{width:28px;height:28px;border:2.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.hidden{display:none!important}
+/* Lightbox */
+#lightbox{position:fixed;inset:0;background:rgba(8,6,5,.95);z-index:50;display:none;align-items:center;justify-content:center;padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom)}
+#lightbox.open{display:flex}
+#lightbox img{max-width:100%;max-height:86dvh;border-radius:12px;object-fit:contain}
+#lb-close{position:absolute;top:max(env(safe-area-inset-top),14px);right:16px;width:40px;height:40px;border-radius:999px;background:rgba(28,23,19,.9);border:1px solid var(--line);color:var(--ink);font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+#lb-by{position:absolute;left:0;right:0;bottom:max(env(safe-area-inset-bottom),16px);text-align:center;font-size:13px;color:var(--ink60)}
+.logo-foot{padding:24px 0 calc(28px + env(safe-area-inset-bottom));display:flex;align-items:center;justify-content:center;gap:8px;opacity:.35}
+.logo-dot{width:22px;height:22px;border-radius:6px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:11px}
+.logo-word{font-size:13px;font-weight:800}
+.logo-word span{color:var(--gold)}
+</style>
+</head>
+<body>
+
+<div id="loader" class="state">
+  <div class="spinner"></div>
+  <p style="font-size:13px;color:var(--ink60)">Loading gallery…</p>
+</div>
+
+<div id="content" class="hidden">
+  <div class="header">
+    <div class="header-logo">Lah<span>za</span></div>
+    <div class="count-badge" id="count-badge"></div>
+  </div>
+
+  <div class="title-block">
+    <div class="eyebrow">📸 The Album</div>
+    <div class="ename" id="ename">—</div>
+    <div class="esub" id="esub"></div>
+  </div>
+
+  <!-- Locked (event still live) -->
+  <div id="locked" class="state hidden">
+    <div class="state-icon">🔒</div>
+    <div class="state-title">The album is still developing</div>
+    <div class="state-sub">Photos stay hidden until the event ends. Come back for the big reveal.</div>
+    <div class="countdown" id="countdown"></div>
+  </div>
+
+  <!-- Empty -->
+  <div id="empty" class="state hidden">
+    <div class="state-icon">🎞</div>
+    <div class="state-title">No photos yet</div>
+    <div class="state-sub">No one has added a shot to this album yet.</div>
+  </div>
+
+  <!-- Revealed -->
+  <div id="grid" class="grid hidden"></div>
+
+  <div class="logo-foot">
+    <div class="logo-dot">📷</div>
+    <div class="logo-word">Lah<span>za</span></div>
+  </div>
+</div>
+
+<!-- Error -->
+<div id="err" class="state hidden">
+  <div class="state-icon">📷</div>
+  <div class="state-title">Gallery not found</div>
+  <div class="state-sub">This link may have expired or been removed.</div>
+</div>
+
+<div id="lightbox">
+  <div id="lb-close">✕</div>
+  <img id="lb-img" alt="">
+  <div id="lb-by"></div>
+</div>
+
+<script>
+const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
+const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
+
+/* ── Adjust these if your Supabase schema differs ───────────────
+   PHOTOS_TABLE : table holding uploaded photos
+   STORAGE_BUCKET: public bucket name (used only when a row stores a
+                   storage *path* instead of a full URL)               */
+const PHOTOS_TABLE   = 'photos';
+const STORAGE_BUCKET = 'photos';
+/* Candidate columns checked in order (first that exists wins). */
+const LINK_COLS  = ['event_id', 'event', 'event_slug', 'slug'];
+const URL_COLS   = ['url', 'image_url', 'photo_url', 'public_url', 'signed_url', 'path', 'storage_path'];
+const NAME_COLS  = ['guest_name', 'name', 'uploader_name', 'author'];
+
+const hdrs = { apikey: ANON, Authorization: 'Bearer ' + ANON };
+const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.getItem('lahza_slug') || '';
+
+const $ = id => document.getElementById(id);
+
+(async function init() {
+  if (!slug) return showErr();
+
+  let ev;
+  try {
+    const r = await fetch(
+      `${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=id,name,subtitle,cover_url,status,ends_at&limit=1`,
+      { headers: hdrs }
+    );
+    [ev] = await r.json();
+  } catch (_) {}
+  if (!ev) return showErr();
+
+  $('ename').textContent = ev.name || 'Event';
+  if (ev.subtitle) $('esub').textContent = ev.subtitle;
+  $('loader').classList.add('hidden');
+  $('content').classList.remove('hidden');
+
+  const ended = isEnded(ev);
+  if (!ended) { showLocked(ev); return; }
+
+  // Revealed — load photos
+  const photos = await loadPhotos(ev);
+  $('count-badge').textContent = photos.length === 1 ? '1 photo' : `${photos.length} photos`;
+
+  if (!photos.length) { $('empty').classList.remove('hidden'); return; }
+  renderGrid(photos);
+})();
+
+function isEnded(ev) {
+  if (ev.status && ev.status !== 'live') return true;
+  if (ev.ends_at && new Date(ev.ends_at).getTime() <= Date.now()) return true;
+  return false;
+}
+
+async function loadPhotos(ev) {
+  for (const col of LINK_COLS) {
+    const val = (col === 'event_id' || col === 'event') ? ev.id : slug;
+    if (val == null) continue;
+    try {
+      const r = await fetch(
+        `${SUPA}/rest/v1/${PHOTOS_TABLE}?${col}=eq.${encodeURIComponent(val)}&select=*&order=created_at.asc`,
+        { headers: hdrs }
+      );
+      if (!r.ok) continue;                 // 400 = wrong column, try next
+      const rows = await r.json();
+      return rows.map(toPhoto).filter(p => p.url);
+    } catch (_) {}
+  }
+  return [];
+}
+
+function toPhoto(row) {
+  let raw = '';
+  for (const c of URL_COLS) { if (row[c]) { raw = row[c]; break; } }
+  const url = /^https?:\/\//.test(raw)
+    ? raw
+    : (raw ? `${SUPA}/storage/v1/object/public/${STORAGE_BUCKET}/${raw.replace(/^\/+/, '')}` : '');
+  let by = '';
+  for (const c of NAME_COLS) { if (row[c]) { by = row[c]; break; } }
+  return { url, by };
+}
+
+function renderGrid(photos) {
+  const grid = $('grid');
+  grid.innerHTML = photos.map((p, i) => `
+    <div class="tile" data-i="${i}">
+      <img loading="lazy" src="${p.url}" alt="">
+      ${p.by ? `<div class="tile-by">${escapeHtml(p.by)}</div>` : ''}
+    </div>`).join('');
+  grid.classList.remove('hidden');
+  grid.querySelectorAll('.tile').forEach(t =>
+    t.addEventListener('click', () => openLightbox(photos[+t.dataset.i]))
+  );
+}
+
+function showLocked(ev) {
+  $('locked').classList.remove('hidden');
+  $('count-badge').textContent = '🔒 Locked';
+  if (!ev.ends_at) { $('countdown').style.display = 'none'; return; }
+  const target = new Date(ev.ends_at).getTime();
+  const tick = () => {
+    const d = target - Date.now();
+    if (d <= 0) { location.reload(); return; }
+    const s = Math.floor(d / 1000);
+    const days = Math.floor(s / 86400), hrs = Math.floor(s % 86400 / 3600),
+          min = Math.floor(s % 3600 / 60), sec = s % 60;
+    $('countdown').innerHTML = [[days,'days'],[hrs,'hrs'],[min,'min'],[sec,'sec']]
+      .map(([n, l]) => `<div class="cd-cell"><div class="cd-num">${String(n).padStart(2,'0')}</div><div class="cd-lbl">${l}</div></div>`)
+      .join('');
+  };
+  tick();
+  setInterval(tick, 1000);
+}
+
+/* Lightbox */
+const lb = $('lightbox');
+function openLightbox(p) {
+  $('lb-img').src = p.url;
+  $('lb-by').textContent = p.by ? 'by ' + p.by : '';
+  lb.classList.add('open');
+}
+function closeLightbox() { lb.classList.remove('open'); $('lb-img').src = ''; }
+$('lb-close').addEventListener('click', closeLightbox);
+lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+function showErr() {
+  $('loader').classList.add('hidden');
+  $('content').classList.add('hidden');
+  $('err').classList.remove('hidden');
+}
+function escapeHtml(s) {
+  return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>

@@ -2,53 +2,127 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Take Photos · OneShot</title>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>Take Photos · Lahza</title>
+<meta name="theme-color" content="#000000">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Mono:wght@500&family=Hanken+Grotesk:wght@400;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box}
-:root{--bg:#100C0A;--surface:#1C1713;--gold:#E7B45A;--ink:#F6F0E6;--ink60:rgba(246,240,230,.6);--ink25:rgba(246,240,230,.25);--line:rgba(246,240,230,.08)}
-body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;background:var(--bg);color:var(--ink);min-height:100dvh;display:flex;flex-direction:column;overflow-x:hidden}
-/* Header */
-.header{display:flex;align-items:center;justify-content:space-between;padding:env(safe-area-inset-top,14px) 20px 14px;padding-top:max(env(safe-area-inset-top),14px)}
-.header-logo{font-size:16px;font-weight:800;letter-spacing:-.3px}
-.header-logo span{color:var(--gold)}
-.shot-badge{background:var(--surface);border:1px solid var(--line);border-radius:999px;padding:6px 14px;font-size:13px;font-weight:700;color:var(--gold)}
-/* Main area */
-.main{flex:1;display:flex;flex-direction:column;align-items:center;padding:0 20px 20px;gap:16px}
-.event-name{font-size:18px;font-weight:800;font-style:italic;text-align:center;letter-spacing:-.3px;color:var(--ink60)}
-/* Photo frame */
-.frame-wrap{width:100%;max-width:360px;position:relative}
-.frame{width:100%;aspect-ratio:3/4;background:var(--surface);border-radius:20px;overflow:hidden;position:relative;border:1.5px solid var(--line);cursor:pointer;-webkit-tap-highlight-color:transparent}
-.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none;filter:contrast(1.08) saturate(0.85) sepia(0.12)}
-.frame-empty{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;pointer-events:none}
-.camera-icon{font-size:44px;opacity:.35}
-.frame-hint{font-size:14px;color:var(--ink25);text-align:center;line-height:1.5;padding:0 20px}
-/* Grain overlay */
-.grain{position:absolute;inset:0;opacity:.04;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");pointer-events:none}
-/* Buttons */
-.actions{width:100%;max-width:360px;display:flex;flex-direction:column;gap:10px}
-.btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;height:54px;border-radius:999px;font-size:16px;font-weight:700;cursor:pointer;border:none;transition:opacity .15s;letter-spacing:-.2px;-webkit-tap-highlight-color:transparent;user-select:none}
-.btn:active{opacity:.75}
-.btn:disabled{opacity:.38;cursor:not-allowed}
-.btn-gold{background:var(--gold);color:var(--bg)}
-.btn-surface{background:var(--surface);color:var(--ink);border:1px solid rgba(246,240,230,.12)}
-input[type=file]{display:none}
-/* Status */
-.status{text-align:center;font-size:13.5px;min-height:20px;padding:0 8px}
-.status.ok{color:#4ade80}
-.status.err{color:#f87171}
-.status.info{color:var(--ink60)}
-/* Done state */
-.done-card{text-align:center;padding:32px 20px;display:flex;flex-direction:column;align-items:center;gap:12px}
-.done-icon{font-size:52px}
-.done-title{font-size:21px;font-weight:800}
-.done-sub{font-size:14px;color:var(--ink60);line-height:1.55}
-/* Loader screen */
-#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:99}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+:root{
+  --bg:#100C0A;--surface:#1C1713;--gold:#E7B45A;--ink:#F6F0E6;
+  --ink60:rgba(246,240,230,.6);--ink50:rgba(246,240,230,.5);--ink25:rgba(246,240,230,.25);
+  --line:rgba(246,240,230,.08);--scrim:rgba(0,0,0,.42);
+}
+html,body{height:100%}
+body{
+  font-family:'Hanken Grotesk',-apple-system,'Helvetica Neue',sans-serif;
+  background:#000;color:var(--ink);overflow:hidden;
+  height:100dvh;position:fixed;inset:0;
+}
+
+/* Loader */
+#loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;z-index:99;padding:0 32px;text-align:center}
 .spinner{width:28px;height:28px;border:2.5px solid var(--line);border-top-color:var(--gold);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
-#loader p{font-size:13px;color:var(--ink60)}
+#loader-msg{font-size:13.5px;color:var(--ink60);line-height:1.5}
+
+/* Camera stage */
+#app{position:fixed;inset:0;display:none;flex-direction:column}
+#cam{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;background:#000;transition:filter .25s}
+#cam.mirror{transform:scaleX(-1)}
+.grain{position:absolute;inset:0;opacity:.05;pointer-events:none;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+.vignette{position:absolute;inset:0;pointer-events:none;background:radial-gradient(120% 90% at 50% 42%,transparent 55%,rgba(0,0,0,.38) 100%)}
+.flash-pop{position:absolute;inset:0;background:#fff;opacity:0;pointer-events:none;z-index:60}
+.flash-pop.go{animation:pop .32s ease}
+@keyframes pop{0%{opacity:.9}100%{opacity:0}}
+
+/* Top bar */
+.top{position:absolute;top:0;left:0;right:0;z-index:20;display:flex;align-items:flex-start;justify-content:space-between;gap:10px;
+  padding:max(env(safe-area-inset-top),14px) 16px 14px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.55),transparent)}
+.icon-btn{width:40px;height:40px;border-radius:50%;background:var(--scrim);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;border:none;cursor:pointer;color:var(--ink);flex-shrink:0;transition:opacity .15s}
+.icon-btn:active{opacity:.6}
+.icon-btn svg{width:20px;height:20px;display:block}
+.ev{flex:1;min-width:0;display:flex;flex-direction:column;align-items:center;gap:1px;padding-top:4px}
+.ev-name{display:flex;align-items:center;gap:5px;max-width:100%}
+.ev-name .nm{font-family:'Instrument Serif',serif;font-style:italic;font-size:21px;line-height:1.1;color:#fff;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-shadow:0 1px 8px rgba(0,0,0,.5)}
+.ev-name .chev{opacity:.7;flex-shrink:0}
+.ev-ends{font-size:11.5px;color:rgba(255,255,255,.7);text-shadow:0 1px 6px rgba(0,0,0,.5);white-space:nowrap}
+.top-actions{display:flex;flex-direction:column;gap:9px;flex-shrink:0}
+
+/* Mid controls (flash / zoom / flip) */
+.mid{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 132px);z-index:20;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;padding:0 22px}
+.flash-btn{grid-column:1;justify-self:start}
+#flip-btn{grid-column:3;justify-self:end}
+.zoom{grid-column:2;display:flex;gap:2px;justify-self:center;background:var(--scrim);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+  border-radius:999px;padding:3px}
+.zoom button{border:none;background:transparent;color:rgba(255,255,255,.7);font-family:'DM Mono',monospace;font-size:12.5px;
+  width:38px;height:30px;border-radius:999px;cursor:pointer}
+.zoom button.on{background:rgba(255,255,255,.16);color:#fff;font-weight:500}
+
+/* Bottom bar */
+.bottom{position:absolute;left:0;right:0;bottom:0;z-index:20;
+  display:grid;grid-template-columns:1fr auto 1fr;align-items:center;
+  padding:18px 24px calc(env(safe-area-inset-bottom,0px) + 26px);
+  background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
+.shots{display:flex;align-items:baseline;gap:8px;justify-self:start}
+.shots .big{font-family:'DM Mono',monospace;font-size:40px;line-height:.9;color:var(--gold);font-weight:500}
+.shots .of{font-family:'DM Mono',monospace;font-size:15px;color:var(--ink50);margin-left:-4px}
+.shots .lbl{font-family:'Bricolage Grotesque','Hanken Grotesk',sans-serif;font-style:italic;font-weight:600;
+  font-size:11px;line-height:1.05;letter-spacing:.3px;color:rgba(255,255,255,.78);text-transform:uppercase;max-width:62px}
+.shutter{width:78px;height:78px;border-radius:50%;border:4px solid #fff;background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;justify-self:center;padding:0;transition:transform .12s}
+.shutter:active{transform:scale(.93)}
+.shutter .core{width:60px;height:60px;border-radius:50%;background:var(--gold);
+  box-shadow:0 4px 18px rgba(231,180,90,.55)}
+.shutter:disabled{border-color:rgba(255,255,255,.3);cursor:not-allowed}
+.shutter:disabled .core{background:rgba(231,180,90,.3);box-shadow:none}
+.thumb{width:52px;height:52px;border-radius:13px;justify-self:end;overflow:hidden;position:relative;
+  background:var(--scrim);border:2px solid rgba(255,255,255,.6);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.thumb .ph{color:rgba(255,255,255,.55)}
+
+/* Status toast */
+.toast{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(env(safe-area-inset-bottom,0px) + 122px);
+  z-index:30;padding:8px 16px;border-radius:999px;background:rgba(0,0,0,.7);backdrop-filter:blur(8px);
+  font-size:13px;font-weight:600;opacity:0;transition:opacity .2s;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.toast.ok{color:#86efac}.toast.err{color:#fca5a5}.toast.info{color:#fff}
+
+/* Preview / confirm overlay */
+#preview{position:fixed;inset:0;z-index:80;display:none;background:#0c0a08}
+#preview img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.pv-top{position:absolute;top:0;left:0;right:0;display:flex;align-items:center;gap:10px;z-index:2;
+  padding:max(env(safe-area-inset-top),16px) 16px 12px;background:linear-gradient(to bottom,rgba(0,0,0,.5),transparent)}
+.pv-title{flex:1;text-align:center;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;color:#fff}
+.pv-bottom{position:absolute;left:0;right:0;bottom:0;z-index:2;display:flex;gap:12px;
+  padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 28px);background:linear-gradient(to top,rgba(0,0,0,.6),transparent)}
+.retake{width:56px;height:56px;border-radius:50%;background:rgba(255,255,255,.14);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;color:#fff;flex-shrink:0}
+.retake:active{opacity:.7}
+.send{flex:1;height:56px;border-radius:999px;background:var(--gold);color:var(--bg);border:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;gap:9px;font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:16px;letter-spacing:-.2px}
+.send:active{opacity:.85}
+.send:disabled{opacity:.55;cursor:not-allowed}
+
+/* Done / blocked states */
+#done{position:fixed;inset:0;z-index:90;display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:14px;text-align:center;padding:40px 28px;background:var(--bg)}
+#done .ico{font-size:52px}
+#done .ttl{font-family:'Bricolage Grotesque',sans-serif;font-weight:800;font-size:23px}
+#done .sub{font-size:14.5px;color:var(--ink60);line-height:1.55;max-width:300px}
+.ghost{margin-top:6px;height:48px;padding:0 22px;border-radius:999px;background:var(--surface);border:1px solid var(--line);
+  color:var(--ink);font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
+
+input[type=file]{display:none}
 .hidden{display:none!important}
 </style>
 </head>
@@ -59,236 +133,380 @@ input[type=file]{display:none}
   <p id="loader-msg">Setting up your camera…</p>
 </div>
 
-<div id="app" class="hidden" style="display:flex;flex-direction:column;min-height:100dvh">
-  <div class="header">
-    <div class="header-logo">One<span>Shot</span></div>
-    <div class="shot-badge" id="shot-badge">— shots left</div>
+<div id="app">
+  <video id="cam" autoplay muted playsinline></video>
+  <div class="vignette"></div>
+  <div class="grain"></div>
+  <div class="flash-pop" id="flash-pop"></div>
+
+  <div class="top">
+    <button class="icon-btn" id="close-btn" aria-label="Close">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg>
+    </button>
+    <div class="ev">
+      <div class="ev-name"><span class="nm" id="ev-name"></span>
+        <svg class="chev" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>
+      </div>
+      <div class="ev-ends" id="ev-ends"></div>
+    </div>
+    <div class="top-actions">
+      <button class="icon-btn" id="share-btn" aria-label="Share">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/></svg>
+      </button>
+      <button class="icon-btn" id="pick-btn" aria-label="Choose photo">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5-5L5 19"/></svg>
+      </button>
+    </div>
   </div>
 
-  <div class="main">
-    <div class="event-name" id="event-name"></div>
-
-    <div class="frame-wrap">
-      <div class="frame" id="frame" onclick="document.getElementById('file-input').click()">
-        <div class="frame-empty" id="frame-empty">
-          <div class="camera-icon">📷</div>
-          <div class="frame-hint">Tap here to take or pick a photo</div>
-        </div>
-        <img id="preview" alt="preview" />
-        <div class="grain"></div>
-      </div>
+  <div class="mid">
+    <button class="icon-btn flash-btn hidden" id="flash-btn" aria-label="Flash">
+      <svg id="flash-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg>
+    </button>
+    <div class="zoom hidden" id="zoom">
+      <button data-z="1" class="on">1×</button>
+      <button data-z="2">2×</button>
     </div>
+    <button class="icon-btn" id="flip-btn" aria-label="Switch camera">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 7h3l1.5-2h9L18 7h3v12H3z" opacity=".0"/><path d="M15 8a4 4 0 1 0 1 5"/><path d="M4 7h4l1.4-2h5.2L16 7h4v11H4z"/><path d="M16.5 9.5V7H14"/></svg>
+    </button>
+  </div>
 
-    <input type="file" id="file-input" accept="image/*" capture="environment" onchange="onPick(event)" />
+  <div class="toast" id="toast"></div>
 
-    <div class="actions" id="actions">
-      <div class="status info" id="status"></div>
-      <button class="btn btn-gold hidden" id="upload-btn" onclick="upload()">Upload Photo →</button>
-      <button class="btn btn-surface" id="pick-btn" onclick="document.getElementById('file-input').click()">📷 Take a Photo</button>
+  <div class="bottom">
+    <div class="shots">
+      <span class="big" id="shots-big">—</span>
+      <span class="of" id="shots-of">/ —</span>
+      <span class="lbl">Shots<br>Remaining</span>
+    </div>
+    <button class="shutter" id="shutter" aria-label="Take photo"><span class="core"></span></button>
+    <div class="thumb" id="thumb">
+      <span class="ph"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5-5L5 19"/></svg></span>
     </div>
   </div>
 </div>
+
+<!-- Capture confirm -->
+<div id="preview">
+  <img id="pv-img" alt="preview">
+  <div class="vignette"></div>
+  <div class="grain"></div>
+  <div class="pv-top">
+    <button class="icon-btn" id="pv-back" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <div class="pv-title">Your shot</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="pv-bottom">
+    <button class="retake" id="pv-retake" aria-label="Retake">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 4v4h4"/></svg>
+    </button>
+    <button class="send" id="pv-send">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg>
+      Send to gallery
+    </button>
+  </div>
+</div>
+
+<!-- Done / no shots -->
+<div id="done">
+  <div class="ico">🎞</div>
+  <div class="ttl" id="done-ttl">No shots remaining</div>
+  <div class="sub" id="done-sub">You have no shots left for this event.</div>
+  <a class="ghost" id="done-gallery" href="#" style="text-decoration:none;background:var(--gold);color:var(--bg);border:none">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5-5L5 19"/></svg>
+    View the gallery
+  </a>
+  <button class="ghost" id="done-share">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/></svg>
+    Share this event
+  </button>
+</div>
+
+<input type="file" id="file-input" accept="image/*" capture="environment">
+
+<canvas id="canvas" class="hidden"></canvas>
 
 <script>
 const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
 const EDGE = `${SUPA}/functions/v1/join`;
+const AUTH = { Authorization: 'Bearer ' + ANON, apikey: ANON };
 
 const sb = supabase.createClient(SUPA, ANON);
 
-let userId    = null;
-let shotsLeft = 0;
-let file      = null;
-let eventName = '';
+const TONE_FILTERS = {
+  nostalgic: 'contrast(1.08) saturate(0.85) sepia(0.12)',
+  classic:   'contrast(1.05) saturate(0.95) sepia(0.05)',
+  mono:      'grayscale(1) contrast(1.1)',
+  vivid:     'saturate(1.3) contrast(1.08)',
+  fade:      'contrast(0.92) saturate(0.82) brightness(1.06)',
+  none:      'none',
+};
 
-const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.getItem('oneshot_slug') || '';
+let userId = null, shotsLeft = 0, shotsLimit = 10, shotsUsed = 0;
+let eventName = '', endsAt = null, tone = 'nostalgic';
+let stream = null, track = null, facing = 'environment';
+let capturedBlob = null, captureUrl = null, sending = false;
 
-(async function init() {
-  if (!slug) {
-    setLoaderMsg('No event found. Please scan the QR code again.');
-    return;
-  }
+const $ = id => document.getElementById(id);
+const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.getItem('lahza_slug') || '';
+const joinUrl = location.origin + '/join.html?slug=' + encodeURIComponent(slug);
+function toneFilter(){ return TONE_FILTERS[tone] || TONE_FILTERS.nostalgic; }
 
-  // Check auth session
+/* ── Init ─────────────────────────────────────────── */
+(async function init(){
+  if (!slug){ setLoaderMsg('No event found. Please scan the QR code again.'); return; }
+
   let session = null;
-  try {
-    const { data } = await sb.auth.getSession();
-    session = data.session;
-  } catch (_) {}
+  try { const { data } = await sb.auth.getSession(); session = data.session; } catch(_){}
+  if (!session){ location.replace('auth.html?slug=' + encodeURIComponent(slug)); return; }
 
-  if (!session) {
-    location.replace('auth.html?slug=' + encodeURIComponent(slug));
-    return;
-  }
-
-  // Register with event via edge function
   const meta = session.user.user_metadata || {};
   const name = meta.full_name || meta.name || (session.user.email || '').split('@')[0] || 'Guest';
 
   const fd = new FormData();
-  fd.append('action',     'register');
-  fd.append('slug',       slug);
+  fd.append('action','register');
+  fd.append('slug', slug);
   fd.append('guest_name', name);
-  fd.append('user_id',    session.user.id);
+  fd.append('user_id', session.user.id);
 
-  let regData;
+  let reg;
   try {
-    const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method: 'POST', body: fd });
-    regData = await r.json();
-  } catch (e) {
-    setLoaderMsg('Connection error. Please check your internet and try again.');
+    const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method:'POST', headers: AUTH, body: fd });
+    reg = await r.json();
+  } catch(e){ setLoaderMsg('Connection error. Please check your internet and try again.'); return; }
+
+  if (reg.error || reg.message || typeof reg.shots_remaining !== 'number'){
+    setLoaderMsg('Error: ' + (reg.error || reg.message || 'Could not join the event. Please try again.'));
     return;
   }
 
-  console.log('[OneShot] register response:', regData);
+  userId     = reg.user_id;
+  shotsLeft  = reg.shots_remaining;
+  shotsLimit = reg.shots_limit ?? 10;
+  shotsUsed  = reg.shots_used ?? 0;
 
-  if (regData.error) {
-    setLoaderMsg('Error: ' + regData.error);
-    return;
-  }
-
-  userId    = regData.user_id;
-  shotsLeft = typeof regData.shots_remaining === 'number' ? regData.shots_remaining : 0;
-  const shotsLimit = regData.shots_limit ?? 10;
-  const shotsUsed  = regData.shots_used  ?? 0;
-
-  // Fetch event name
   try {
-    const r = await fetch(
-      `${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=name&limit=1`,
-      { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } }
-    );
+    const r = await fetch(`${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=name,ends_at,cover_tone&limit=1`,
+      { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } });
     const [ev] = await r.json();
-    if (ev) eventName = ev.name;
-  } catch (_) {}
+    if (ev){ eventName = ev.name; endsAt = ev.ends_at; tone = ev.cover_tone || 'nostalgic'; }
+  } catch(_){}
 
-  document.getElementById('event-name').textContent = eventName;
-  updateShotBadge();
+  $('ev-name').textContent = eventName;
+  $('ev-ends').textContent = fmtEnds(endsAt);
+  updateShots();
 
-  if (shotsLeft <= 0) {
-    // If they used all shots previously — show specific message
-    showDone(shotsUsed >= shotsLimit);
-  } else {
-    showApp();
-  }
+  if (shotsLeft <= 0){ showDone(shotsUsed >= shotsLimit); return; }
+
+  showApp();
+  startCamera();
 })();
 
-function setLoaderMsg(msg) {
-  document.getElementById('loader-msg').textContent = msg;
+/* ── UI helpers ───────────────────────────────────── */
+function setLoaderMsg(m){ $('loader-msg').textContent = m; }
+function showApp(){ $('loader').style.display = 'none'; $('app').style.display = 'flex'; }
+function updateShots(){
+  $('shots-big').textContent = shotsLeft;
+  $('shots-of').textContent  = '/ ' + shotsLimit;
+  $('shots-big').style.color = shotsLeft <= 2 ? '#fca5a5' : 'var(--gold)';
+  $('shutter').disabled = shotsLeft <= 0;
+}
+function fmtEnds(iso){
+  if (!iso) return '';
+  const d = new Date(iso);
+  const day = d.toLocaleDateString('en-GB', { weekday:'short' });
+  const t   = d.toLocaleTimeString('en-GB', { hour:'2-digit', minute:'2-digit', hour12:false });
+  return `Ends ${day} at ${t}`;
+}
+let toastTimer = null;
+function toast(msg, type='info', hold=1800){
+  const el = $('toast');
+  el.textContent = msg; el.className = 'toast show ' + type;
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => el.classList.remove('show'), hold);
 }
 
-function showApp() {
-  document.getElementById('loader').classList.add('hidden');
-  const app = document.getElementById('app');
-  app.classList.remove('hidden');
-  app.style.display = 'flex';
-}
-
-function updateShotBadge() {
-  const el = document.getElementById('shot-badge');
-  el.textContent = shotsLeft === 1 ? '1 shot left' : `${shotsLeft} shots left`;
-  el.style.color = shotsLeft <= 2 ? '#f87171' : 'var(--gold)';
-}
-
-function onPick(e) {
-  file = e.target.files[0];
-  if (!file) return;
-
-  const reader = new FileReader();
-  reader.onload = ev => {
-    const img = document.getElementById('preview');
-    img.src = ev.target.result;
-    img.style.display = 'block';
-    document.getElementById('frame-empty').style.display = 'none';
-    document.getElementById('upload-btn').classList.remove('hidden');
-    document.getElementById('pick-btn').textContent = '↩ Change Photo';
-    setStatus('');
-  };
-  reader.readAsDataURL(file);
-  // Reset file input so same file can be re-selected
-  e.target.value = '';
-}
-
-async function upload() {
-  if (!file) { setStatus('Please select a photo first.', 'err'); return; }
-  if (shotsLeft <= 0) { setStatus('You have used all your shots.', 'err'); return; }
-
-  const uploadBtn = document.getElementById('upload-btn');
-  const pickBtn   = document.getElementById('pick-btn');
-  uploadBtn.disabled = true;
-  uploadBtn.textContent = 'Uploading…';
-  pickBtn.disabled = true;
-  setStatus('Uploading your photo…', 'info');
-
-  const fd = new FormData();
-  fd.append('slug',    slug);
-  fd.append('user_id', userId);
-  fd.append('photo',   file, 'photo.jpg');
-
+/* ── Camera ───────────────────────────────────────── */
+async function startCamera(){
+  stopCamera();
+  const cam = $('cam');
   try {
-    const r    = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method: 'POST', body: fd });
-    const data = await r.json();
-
-    if (data.success) {
-      shotsLeft--;
-      updateShotBadge();
-      setStatus('✓ Photo uploaded!', 'ok');
-
-      if (shotsLeft <= 0) {
-        setTimeout(() => showDone(false), 1200);
-        return;
-      }
-
-      // Reset for next photo
-      setTimeout(() => {
-        file = null;
-        document.getElementById('preview').style.display = 'none';
-        document.getElementById('frame-empty').style.display = 'flex';
-        document.getElementById('upload-btn').classList.add('hidden');
-        document.getElementById('pick-btn').textContent = '📷 Take Another Photo';
-        uploadBtn.disabled = false;
-        uploadBtn.textContent = 'Upload Photo →';
-        pickBtn.disabled = false;
-        setStatus('');
-      }, 1400);
-    } else {
-      setStatus('Error: ' + (data.error || 'Upload failed'), 'err');
-      uploadBtn.disabled = false;
-      uploadBtn.textContent = 'Upload Photo →';
-      pickBtn.disabled = false;
-    }
-  } catch (e) {
-    setStatus('Network error. Please try again.', 'err');
-    uploadBtn.disabled = false;
-    uploadBtn.textContent = 'Upload Photo →';
-    pickBtn.disabled = false;
+    stream = await navigator.mediaDevices.getUserMedia({
+      video: { facingMode: { ideal: facing }, width: { ideal: 1920 }, height: { ideal: 1920 } },
+      audio: false,
+    });
+    cam.srcObject = stream;
+    cam.style.filter = toneFilter();
+    cam.classList.toggle('mirror', facing === 'user');
+    track = stream.getVideoTracks()[0];
+    setupCapabilities();
+  } catch(e){
+    // No live camera (permission denied / unsupported) → fall back to native picker
+    cam.style.display = 'none';
+    toast('Camera unavailable — tap 🖼 to pick a photo', 'err', 4000);
+    $('flash-btn').classList.add('hidden');
+    $('zoom').classList.add('hidden');
   }
 }
+function stopCamera(){ if (stream){ stream.getTracks().forEach(t => t.stop()); stream = null; track = null; } }
 
-function showDone(limitReached) {
-  document.getElementById('loader').classList.add('hidden');
-  const app = document.getElementById('app');
-  app.classList.remove('hidden');
-  app.style.display = 'flex';
-
-  document.querySelector('.frame-wrap').style.display = 'none';
-  document.getElementById('actions').innerHTML = `
-    <div class="done-card">
-      <div class="done-icon">🎞</div>
-      <div class="done-title">${limitReached ? 'All shots used!' : 'No shots remaining'}</div>
-      <div class="done-sub">${limitReached
-        ? 'You\'ve used all your shots for this event. Check the gallery to see everyone\'s photos!'
-        : 'You have no shots left for this event.'
-      }</div>
-    </div>`;
-  setStatus('');
+function setupCapabilities(){
+  const caps = track.getCapabilities ? track.getCapabilities() : {};
+  // Torch (flash)
+  if (caps.torch){ $('flash-btn').classList.remove('hidden'); } else { $('flash-btn').classList.add('hidden'); torchOff(); }
+  // Zoom
+  if (caps.zoom && caps.zoom.max > caps.zoom.min){
+    $('zoom').classList.remove('hidden');
+    $('zoom')._min = caps.zoom.min || 1;
+    $('zoom')._x2  = Math.min(caps.zoom.max, Math.max(2, (caps.zoom.min||1)*2));
+  } else { $('zoom').classList.add('hidden'); }
 }
 
-function setStatus(msg, type = '') {
-  const el = document.getElementById('status');
-  el.textContent = msg;
-  el.className = 'status' + (type ? ' ' + type : '');
+let torchOn = false;
+function torchOff(){ torchOn = false; const s=$('flash-svg'); s.setAttribute('fill','none'); }
+async function toggleTorch(){
+  if (!track) return;
+  torchOn = !torchOn;
+  try { await track.applyConstraints({ advanced: [{ torch: torchOn }] }); }
+  catch(_){ torchOn = !torchOn; return; }
+  $('flash-svg').setAttribute('fill', torchOn ? 'currentColor' : 'none');
 }
+async function setZoom(z, btn){
+  if (!track) return;
+  const el = $('zoom');
+  const val = z === 2 ? el._x2 : el._min;
+  try { await track.applyConstraints({ advanced: [{ zoom: val }] }); } catch(_){}
+  [...el.querySelectorAll('button')].forEach(b => b.classList.toggle('on', b === btn));
+}
+
+/* ── Capture ──────────────────────────────────────── */
+function capture(){
+  if (shotsLeft <= 0) return;
+  const cam = $('cam');
+  if (!stream || !cam.videoWidth){ $('file-input').click(); return; }
+
+  $('flash-pop').classList.remove('go'); void $('flash-pop').offsetWidth; $('flash-pop').classList.add('go');
+
+  const cv = $('canvas');
+  cv.width = cam.videoWidth; cv.height = cam.videoHeight;
+  const ctx = cv.getContext('2d');
+  try { ctx.filter = toneFilter(); } catch(_){}
+  if (facing === 'user'){ ctx.translate(cv.width, 0); ctx.scale(-1, 1); }
+  ctx.drawImage(cam, 0, 0, cv.width, cv.height);
+
+  cv.toBlob(blob => {
+    if (!blob){ toast('Could not capture. Try again.', 'err'); return; }
+    showPreview(blob);
+  }, 'image/jpeg', 0.88);
+}
+
+function showPreview(blob){
+  capturedBlob = blob;
+  if (captureUrl) URL.revokeObjectURL(captureUrl);
+  captureUrl = URL.createObjectURL(blob);
+  const img = $('pv-img');
+  img.style.filter = (capturedBlob._baked === false) ? toneFilter() : 'none';
+  img.src = captureUrl;
+  $('preview').style.display = 'block';
+}
+function hidePreview(){ $('preview').style.display = 'none'; capturedBlob = null; }
+
+/* Gallery pick fallback — upload original, show tone only as preview */
+function onPick(e){
+  const f = e.target.files && e.target.files[0];
+  e.target.value = '';
+  if (!f) return;
+  f._baked = false;            // not tone-baked → apply filter visually on preview
+  showPreview(f);
+}
+
+/* ── Send ─────────────────────────────────────────── */
+async function send(){
+  if (!capturedBlob || sending) return;
+  if (shotsLeft <= 0){ toast('No shots left.', 'err'); return; }
+  sending = true;
+  const btn = $('pv-send');
+  btn.disabled = true; btn.textContent = 'Uploading…';
+
+  const fd = new FormData();
+  fd.append('slug', slug);
+  fd.append('user_id', userId);
+  fd.append('photo', capturedBlob, 'photo.jpg');
+
+  try {
+    const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method:'POST', headers: AUTH, body: fd });
+    const data = await r.json();
+    if (data.success){
+      shotsLeft = Math.max(0, shotsLeft - 1);
+      shotsUsed += 1;
+      updateShots();
+      setThumb(captureUrl);
+      hidePreview();
+      resetSendBtn();
+      sending = false;
+      if (shotsLeft <= 0){ showDone(false); return; }
+      toast('✓ Shot added to the gallery', 'ok');
+    } else {
+      toast('Error: ' + (data.error || data.message || 'Upload failed'), 'err', 3000);
+      resetSendBtn(); sending = false;
+    }
+  } catch(e){
+    toast('Network error. Please try again.', 'err', 3000);
+    resetSendBtn(); sending = false;
+  }
+}
+function resetSendBtn(){
+  const btn = $('pv-send');
+  btn.disabled = false;
+  btn.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> Send to gallery';
+}
+function setThumb(url){
+  const t = $('thumb');
+  t.innerHTML = '';
+  const img = document.createElement('img');
+  img.src = url; t.appendChild(img);
+}
+
+/* ── Done / share ─────────────────────────────────── */
+function showDone(limitReached){
+  stopCamera();
+  $('loader').style.display = 'none';
+  $('app').style.display = 'none';
+  $('preview').style.display = 'none';
+  $('done-ttl').textContent = limitReached ? 'All shots used!' : 'No shots remaining';
+  $('done-sub').textContent = limitReached
+    ? "You've used all your shots for this event. Thanks for being part of it!"
+    : 'You have no shots left for this event.';
+  $('done-gallery').href = 'gallery.html?slug=' + encodeURIComponent(slug);
+  $('done').style.display = 'flex';
+}
+async function share(){
+  const data = { title: eventName || 'Lahza', text: `Join "${eventName}" on Lahza`, url: joinUrl };
+  try { if (navigator.share){ await navigator.share(data); return; } } catch(_){ return; }
+  try { await navigator.clipboard.writeText(joinUrl); toast('Link copied', 'ok'); }
+  catch(_){ toast(joinUrl, 'info', 4000); }
+}
+
+/* ── Events ───────────────────────────────────────── */
+$('shutter').addEventListener('click', capture);
+$('flip-btn').addEventListener('click', () => { facing = facing === 'user' ? 'environment' : 'user'; startCamera(); });
+$('flash-btn').addEventListener('click', toggleTorch);
+$('share-btn').addEventListener('click', share);
+$('done-share').addEventListener('click', share);
+$('pick-btn').addEventListener('click', () => $('file-input').click());
+$('thumb').addEventListener('click', () => $('file-input').click());
+$('file-input').addEventListener('change', onPick);
+$('pv-back').addEventListener('click', hidePreview);
+$('pv-retake').addEventListener('click', hidePreview);
+$('pv-send').addEventListener('click', send);
+$('close-btn').addEventListener('click', () => { stopCamera(); location.href = joinUrl; });
+$('zoom').addEventListener('click', e => { const b = e.target.closest('button'); if (b) setZoom(Number(b.dataset.z), b); });
+
+window.addEventListener('pagehide', stopCamera);
 </script>
 </body>
 </html>
