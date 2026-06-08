@@ -40,15 +40,20 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
 </head>
 <body>
 
+<div class="lang-toggle" style="position:fixed;top:14px;right:14px;z-index:50">
+  <button data-lang-btn="en" onclick="LahzaI18N.set('en')">EN</button>
+  <button data-lang-btn="tr" onclick="LahzaI18N.set('tr')">TR</button>
+</div>
+
 <div id="loader">
   <div class="spinner"></div>
-  <p>Loading event…</p>
+  <p data-i18n="join.loading">Loading event…</p>
 </div>
 
 <div id="err" class="hidden">
   <div style="font-size:46px">📷</div>
-  <div style="font-size:20px;font-weight:800">Event not found</div>
-  <div style="font-size:13.5px;color:var(--ink60)">This QR code may have expired or been removed.</div>
+  <div style="font-size:20px;font-weight:800" data-i18n="join.notFoundTitle">Event not found</div>
+  <div style="font-size:13.5px;color:var(--ink60)" data-i18n="join.notFoundSub">This QR code may have expired or been removed.</div>
 </div>
 
 <div id="main" class="hidden" style="display:flex;flex-direction:column;flex:1;min-height:100dvh">
@@ -64,11 +69,11 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   <div class="body">
     <div class="meta-row" id="meta-row"></div>
 
-    <a class="btn btn-gold" id="app-btn" href="#">Open in Lahza App →</a>
+    <a class="btn btn-gold" id="app-btn" href="#" data-i18n="join.openApp">Open in Lahza App →</a>
 
-    <div class="divider">or</div>
+    <div class="divider" data-i18n="join.or">or</div>
 
-    <button class="btn btn-surface" id="web-btn">Continue on Web</button>
+    <button class="btn btn-surface" id="web-btn" data-i18n="join.continueWeb">Continue on Web</button>
 
     <div class="logo">
       <div class="logo-dot">📷</div>
@@ -77,6 +82,7 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   </div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script>
 const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
@@ -97,11 +103,17 @@ const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZ
     if (ev.subtitle) document.getElementById('esub').textContent = ev.subtitle;
     if (ev.cover_url) document.getElementById('cover').style.backgroundImage = `url('${ev.cover_url}')`;
 
-    const ends = new Date(ev.ends_at).toLocaleString('en-GB', { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false });
-    document.getElementById('meta-row').innerHTML =
-      `<div class="pill">${ev.status === 'live' ? '🟡 Live' : '⏹ Ended'}</div>` +
-      `<div class="pill">Ends <b>${ends}</b></div>` +
-      `<div class="pill">📷 <b>${ev.photos_per_person}</b> shots/person</div>`;
+    function renderMeta() {
+      const loc = (window.LahzaI18N && LahzaI18N.get() === 'tr') ? 'tr-TR' : 'en-GB';
+      const ends = new Date(ev.ends_at).toLocaleString(loc, { day:'numeric', month:'short', hour:'2-digit', minute:'2-digit', hour12:false });
+      const T = k => window.LahzaI18N ? LahzaI18N.t(k) : k;
+      document.getElementById('meta-row').innerHTML =
+        `<div class="pill">${ev.status === 'live' ? T('join.live') : T('join.ended')}</div>` +
+        `<div class="pill">${T('join.endsLabel')} <b>${ends}</b></div>` +
+        `<div class="pill">📷 <b>${ev.photos_per_person}</b> ${T('join.shotsPerPerson')}</div>`;
+    }
+    renderMeta();
+    document.addEventListener('lahza:langchange', renderMeta);
 
     document.getElementById('app-btn').href = `lahza://join/${slug}`;
     document.getElementById('web-btn').onclick = () => {

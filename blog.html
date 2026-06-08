@@ -37,11 +37,15 @@
       <span class="logo-word">Lah<b>za</b></span>
     </a>
     <nav class="nav-links">
-      <a class="navlink" href="blog.html">Blog</a>
-      <a class="navlink" href="index.html#how">How it Works</a>
-      <a class="navlink" href="index.html#pricing">Pricing</a>
-      <a class="btn btn-primary" href="index.html#download">Download</a>
+      <a class="navlink" href="blog.html" data-i18n="nav.blog">Blog</a>
+      <a class="navlink" href="index.html#how" data-i18n="nav.how">How it Works</a>
+      <a class="navlink" href="index.html#pricing" data-i18n="nav.pricing">Pricing</a>
+      <a class="btn btn-primary" href="index.html#download" data-i18n="nav.download">Download</a>
     </nav>
+    <div class="lang-toggle" style="margin-left:14px">
+      <button data-lang-btn="en" onclick="LahzaI18N.set('en')">EN</button>
+      <button data-lang-btn="tr" onclick="LahzaI18N.set('tr')">TR</button>
+    </div>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
@@ -55,11 +59,11 @@
     <button class="mm-close" id="mmClose" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <nav>
-    <a href="blog.html" class="accent" data-mm>Blog</a>
-    <a href="index.html#how" data-mm>How it Works</a>
-    <a href="index.html#features" data-mm>Features</a>
-    <a href="index.html#pricing" data-mm>Pricing</a>
-    <a href="index.html#download" data-mm>Download</a>
+    <a href="blog.html" class="accent" data-mm data-i18n="nav.blog">Blog</a>
+    <a href="index.html#how" data-mm data-i18n="nav.how">How it Works</a>
+    <a href="index.html#features" data-mm data-i18n="nav.features">Features</a>
+    <a href="index.html#pricing" data-mm data-i18n="nav.pricing">Pricing</a>
+    <a href="index.html#download" data-mm data-i18n="nav.download">Download</a>
   </nav>
 </div>
 
@@ -68,9 +72,9 @@
 <!-- ============================ HERO ============================ -->
 <section class="blog-hero">
   <div class="wrap">
-    <span class="eyebrow reveal">The Journal</span>
-    <h1 class="h1 reveal" style="--reveal-delay:.05s">Stories from <span class="accent">every angle.</span></h1>
-    <p class="lead reveal" style="--reveal-delay:.1s">Tips, real events and ideas on capturing your day through everyone's eyes — straight from the Lahza team and the hosts who use it.</p>
+    <span class="eyebrow reveal" data-i18n="blog.eyebrow">The Journal</span>
+    <h1 class="h1 reveal" style="--reveal-delay:.05s" data-i18n-html="blog.title">Stories from <span class="accent">every angle.</span></h1>
+    <p class="lead reveal" style="--reveal-delay:.1s" data-i18n="blog.lead">Tips, real events and ideas on capturing your day through everyone's eyes — straight from the Lahza team and the hosts who use it.</p>
   </div>
 </section>
 
@@ -82,11 +86,11 @@
     <a href="#" class="blog-featured reveal">
       <div class="ph bf-media" data-label="" style="background-image:url('assets/app-cameras.jpeg');"></div>
       <div class="bf-body">
-        <span class="blog-cat">Featured · Behind the Moment</span>
-        <h2>The 6 a.m. reveal: why waiting makes the album hit harder</h2>
-        <p>We dug into thousands of Lahza events to understand the magic of the timed reveal — and why the photos you can't see yet are the ones you'll never forget.</p>
-        <span class="text-link">Read the story <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
-        <div class="blog-meta"><b>Lahza Team</b> · 7 min read · Jun 2026</div>
+        <span class="blog-cat" data-i18n="blog.featuredCat">Featured · Behind the Moment</span>
+        <h2 data-i18n="blog.featuredTitle">The 6 a.m. reveal: why waiting makes the album hit harder</h2>
+        <p data-i18n="blog.featuredText">We dug into thousands of Lahza events to understand the magic of the timed reveal — and why the photos you can't see yet are the ones you'll never forget.</p>
+        <span class="text-link"><span data-i18n="blog.readStory">Read the story</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span>
+        <div class="blog-meta" data-i18n-html="blog.featuredMeta"><b>Lahza Team</b> · 7 min read · Jun 2026</div>
       </div>
     </a>
 
@@ -95,67 +99,67 @@
       <a href="#" class="blog-card reveal">
         <div class="ph bc-media" data-label="" style="background-image:url('assets/app-create.jpeg');"></div>
         <div class="bc-body">
-          <span class="blog-cat">Guides</span>
-          <h3>How many shots should each guest get?</h3>
-          <p>5, 25 or unlimited? A simple framework for setting the shot limit that fits your event.</p>
-          <div class="blog-meta"><b>Hannah R.</b> · 4 min read</div>
+          <span class="blog-cat" data-i18n="blog.cat.guides">Guides</span>
+          <h3 data-i18n="blog.p1.title">How many shots should each guest get?</h3>
+          <p data-i18n="blog.p1.text">5, 25 or unlimited? A simple framework for setting the shot limit that fits your event.</p>
+          <div class="blog-meta" data-i18n-html="blog.p1.meta"><b>Hannah R.</b> · 4 min read</div>
         </div>
       </a>
 
       <a href="#" class="blog-card reveal" style="--reveal-delay:.08s">
         <div class="ph bc-media" data-label="" style="background-image:url('assets/app-cameras.jpeg');"></div>
         <div class="bc-body">
-          <span class="blog-cat">Weddings</span>
-          <h3>A shared camera beats a hashtag every time</h3>
-          <p>Why couples are retiring the wedding hashtag in favour of one private, shared roll.</p>
-          <div class="blog-meta"><b>Priya S.</b> · 5 min read</div>
+          <span class="blog-cat" data-i18n="blog.cat.weddings">Weddings</span>
+          <h3 data-i18n="blog.p2.title">A shared camera beats a hashtag every time</h3>
+          <p data-i18n="blog.p2.text">Why couples are retiring the wedding hashtag in favour of one private, shared roll.</p>
+          <div class="blog-meta" data-i18n-html="blog.p2.meta"><b>Priya S.</b> · 5 min read</div>
         </div>
       </a>
 
       <a href="#" class="blog-card reveal" style="--reveal-delay:.16s">
         <div class="ph bc-media" data-label="" style="background-image:url('assets/app-create.jpeg');"></div>
         <div class="bc-body">
-          <span class="blog-cat">Product</span>
-          <h3>QR, no download: the science of zero friction</h3>
-          <p>How we got guests from "scan" to "shoot" in under eight seconds — grandparents included.</p>
-          <div class="blog-meta"><b>Lahza Team</b> · 6 min read</div>
+          <span class="blog-cat" data-i18n="blog.cat.product">Product</span>
+          <h3 data-i18n="blog.p3.title">QR, no download: the science of zero friction</h3>
+          <p data-i18n="blog.p3.text">How we got guests from “scan” to “shoot” in under eight seconds — grandparents included.</p>
+          <div class="blog-meta" data-i18n-html="blog.p3.meta"><b>Lahza Team</b> · 6 min read</div>
         </div>
       </a>
 
       <a href="#" class="blog-card reveal">
         <div class="ph bc-media" data-label="" style="background-image:url('assets/app-cameras.jpeg');"></div>
         <div class="bc-body">
-          <span class="blog-cat">Inspiration</span>
-          <h3>10 events that aren't weddings (but should use Lahza)</h3>
-          <p>From reunions to road trips — the everyday moments worth capturing from every angle.</p>
-          <div class="blog-meta"><b>Marco D.</b> · 3 min read</div>
+          <span class="blog-cat" data-i18n="blog.cat.inspiration">Inspiration</span>
+          <h3 data-i18n="blog.p4.title">10 events that aren't weddings (but should use Lahza)</h3>
+          <p data-i18n="blog.p4.text">From reunions to road trips — the everyday moments worth capturing from every angle.</p>
+          <div class="blog-meta" data-i18n-html="blog.p4.meta"><b>Marco D.</b> · 3 min read</div>
         </div>
       </a>
 
       <a href="#" class="blog-card reveal" style="--reveal-delay:.08s">
         <div class="ph bc-media" data-label="" style="background-image:url('assets/app-create.jpeg');"></div>
         <div class="bc-body">
-          <span class="blog-cat">Behind the Moment</span>
-          <h3>The disposable camera, reborn for the group chat era</h3>
-          <p>What a 90s plastic camera taught us about making every single frame count.</p>
-          <div class="blog-meta"><b>Lahza Team</b> · 5 min read</div>
+          <span class="blog-cat" data-i18n="blog.cat.behind">Behind the Moment</span>
+          <h3 data-i18n="blog.p5.title">The disposable camera, reborn for the group chat era</h3>
+          <p data-i18n="blog.p5.text">What a 90s plastic camera taught us about making every single frame count.</p>
+          <div class="blog-meta" data-i18n-html="blog.p5.meta"><b>Lahza Team</b> · 5 min read</div>
         </div>
       </a>
 
       <a href="#" class="blog-card reveal" style="--reveal-delay:.16s">
         <div class="ph bc-media" data-label="" style="background-image:url('assets/app-cameras.jpeg');"></div>
         <div class="bc-body">
-          <span class="blog-cat">Privacy</span>
-          <h3>Your event, your album, your rules</h3>
-          <p>How Lahza keeps every roll private and secure — and exactly who can see what.</p>
-          <div class="blog-meta"><b>Lahza Team</b> · 4 min read</div>
+          <span class="blog-cat" data-i18n="blog.cat.privacy">Privacy</span>
+          <h3 data-i18n="blog.p6.title">Your event, your album, your rules</h3>
+          <p data-i18n="blog.p6.text">How Lahza keeps every roll private and secure — and exactly who can see what.</p>
+          <div class="blog-meta" data-i18n-html="blog.p6.meta"><b>Lahza Team</b> · 4 min read</div>
         </div>
       </a>
     </div>
 
     <div style="text-align:center; margin-top:64px;" class="reveal">
       <a href="index.html#download" class="btn btn-primary store-btn" style="margin-inline:auto;">
-        <span class="sb-main">Start your own camera</span>
+        <span class="sb-main" data-i18n="blog.startCta">Start your own camera</span>
       </a>
     </div>
   </div>
@@ -172,28 +176,29 @@
           <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.7 6.3l1-1.7h4.6l1 1.7h2.5A2.2 2.2 0 0 1 20 8.5v8.3A2.2 2.2 0 0 1 17.8 19H6.2A2.2 2.2 0 0 1 4 16.8V8.5a2.2 2.2 0 0 1 2.2-2.2z"/><circle cx="12" cy="12.9" r="3.3"/><path d="M10.1 11.6a2.5 2.5 0 0 1 1.9-1" stroke-width="1.3"/></svg></span>
           <span class="logo-word">Lah<b>za</b></span>
         </a>
-        <p>A shared camera for your events. Capture your day through everyone's eyes.</p>
+        <p data-i18n="footer.tagline">A shared camera for your events. Capture your day through everyone's eyes.</p>
       </div>
       <div class="footer-col">
-        <h4>Product</h4>
-        <ul><li><a href="index.html#how">How it Works</a></li><li><a href="index.html#features">Features</a></li><li><a href="index.html#pricing">Pricing</a></li></ul>
+        <h4 data-i18n="footer.product">Product</h4>
+        <ul><li><a href="index.html#how" data-i18n="nav.how">How it Works</a></li><li><a href="index.html#features" data-i18n="nav.features">Features</a></li><li><a href="index.html#pricing" data-i18n="nav.pricing">Pricing</a></li></ul>
       </div>
       <div class="footer-col">
-        <h4>Use Cases</h4>
-        <ul><li><a href="index.html#usecases">Wedding</a></li><li><a href="index.html#usecases">Birthday</a></li><li><a href="index.html#usecases">Party</a></li><li><a href="index.html#usecases">Trip</a></li><li><a href="index.html#usecases">Everyday</a></li></ul>
+        <h4 data-i18n="footer.useCases">Use Cases</h4>
+        <ul><li><a href="index.html#usecases" data-i18n="uc.wedding">Wedding</a></li><li><a href="index.html#usecases" data-i18n="uc.birthday">Birthday</a></li><li><a href="index.html#usecases" data-i18n="uc.party">Party</a></li><li><a href="index.html#usecases" data-i18n="uc.trip">Trip</a></li><li><a href="index.html#usecases" data-i18n="uc.everyday">Everyday</a></li></ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
-        <ul><li><a href="blog.html">Blog</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Use</a></li></ul>
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul><li><a href="blog.html" data-i18n="nav.blog">Blog</a></li><li><a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a></li><li><a href="terms.html" data-i18n="footer.terms">Terms of Use</a></li></ul>
       </div>
     </div>
     <div class="footer-bar">
-      <span>© 2026 Lahza. All rights reserved.</span>
-      <span>Made with <span class="heart">♥</span> for memories.</span>
+      <span data-i18n="footer.rights">© 2026 Lahza. All rights reserved.</span>
+      <span data-i18n-html="footer.made">Made with <span class="heart">♥</span> for memories.</span>
     </div>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

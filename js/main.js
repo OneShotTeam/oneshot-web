@@ -176,27 +176,34 @@
     var pcCount = document.getElementById('pcCount');
     var pcPrice = document.getElementById('pcPrice');
     var pcMax = document.getElementById('pcMax');
+    function tr(k, v) { return window.LahzaI18N ? LahzaI18N.t(k, v) : k; }
     function bump(el) {
       el.classList.remove('bump');
       void el.offsetWidth;
       el.classList.add('bump');
+    }
+    var currentN = '5';
+    function renderPrice(n, doBump) {
+      currentN = n;
+      if (n === 'custom') {
+        pcCount.textContent = '200+';
+        pcPrice.textContent = tr('pricing.letsTalk');
+        pcMax.textContent = tr('pricing.customMax');
+      } else {
+        pcCount.textContent = n;
+        pcPrice.innerHTML = PRICES[n] === 'Free' ? tr('pricing.free') : PRICES[n] + '<small>' + tr('pricing.perEvent') + '</small>';
+        pcMax.textContent = tr('pricing.maxGuests', { n: n });
+      }
+      if (doBump) { bump(pcCount); bump(pcPrice); }
     }
     pcPills.addEventListener('click', function (e) {
       var btn = e.target.closest('.pc-pill');
       if (!btn) return;
       pcPills.querySelectorAll('.pc-pill').forEach(function (p) { p.classList.remove('active'); });
       btn.classList.add('active');
-      var n = btn.getAttribute('data-n');
-      if (n === 'custom') {
-        pcCount.textContent = '200+';
-        pcPrice.textContent = "Let's talk";
-        pcMax.textContent = 'More than 200 guests — we’ll tailor a plan for you';
-      } else {
-        pcCount.textContent = n;
-        pcPrice.innerHTML = PRICES[n] === 'Free' ? 'Free' : PRICES[n] + '<small> / event</small>';
-        pcMax.textContent = 'Maximum of ' + n + ' guests can join your event';
-      }
-      bump(pcCount); bump(pcPrice);
+      renderPrice(btn.getAttribute('data-n'), true);
     });
+    renderPrice('5', false);
+    document.addEventListener('lahza:langchange', function () { renderPrice(currentN, false); });
   }
 })();

@@ -37,11 +37,15 @@
       <span class="logo-word">Lah<b>za</b></span>
     </a>
     <nav class="nav-links">
-      <a class="navlink" href="blog.html">Blog</a>
-      <a class="navlink" href="#how">How it Works</a>
-      <a class="navlink" href="#pricing">Pricing</a>
-      <a class="btn btn-primary" href="#download">Download</a>
+      <a class="navlink" href="blog.html" data-i18n="nav.blog">Blog</a>
+      <a class="navlink" href="#how" data-i18n="nav.how">How it Works</a>
+      <a class="navlink" href="#pricing" data-i18n="nav.pricing">Pricing</a>
+      <a class="btn btn-primary" href="#download" data-i18n="nav.download">Download</a>
     </nav>
+    <div class="lang-toggle" style="margin-left:14px">
+      <button data-lang-btn="en" onclick="LahzaI18N.set('en')">EN</button>
+      <button data-lang-btn="tr" onclick="LahzaI18N.set('tr')">TR</button>
+    </div>
     <button class="nav-toggle" id="navToggle" aria-label="Open menu">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 7h16M4 12h16M4 17h16"/></svg>
     </button>
@@ -55,11 +59,11 @@
     <button class="mm-close" id="mmClose" aria-label="Close menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </div>
   <nav>
-    <a href="blog.html" data-mm>Blog</a>
-    <a href="#how" data-mm>How it Works</a>
-    <a href="#features" data-mm>Features</a>
-    <a href="#pricing" data-mm>Pricing</a>
-    <a href="#download" class="accent" data-mm>Download</a>
+    <a href="blog.html" data-mm data-i18n="nav.blog">Blog</a>
+    <a href="#how" data-mm data-i18n="nav.how">How it Works</a>
+    <a href="#features" data-mm data-i18n="nav.features">Features</a>
+    <a href="#pricing" data-mm data-i18n="nav.pricing">Pricing</a>
+    <a href="#download" class="accent" data-mm data-i18n="nav.download">Download</a>
   </nav>
 </div>
 
@@ -70,9 +74,9 @@
   <div class="ph hero-bg-photo" data-label=""></div>
   <div class="wrap hero-grid">
     <div class="hero-copy reveal">
-      <span class="eyebrow">A shared camera for your events</span>
-      <h1 class="h1" id="heroTitle">Capture your day<br>through <span class="accent">everyone's eyes.</span></h1>
-      <p class="lead">Lahza is a shared camera for your events. Guests join with a QR code — no download needed. The album reveals when the moment ends.</p>
+      <span class="eyebrow" data-i18n="hero.eyebrow">A shared camera for your events</span>
+      <h1 class="h1" id="heroTitle" data-i18n-html="hero.title">Capture your day<br>through <span class="accent">everyone's eyes.</span></h1>
+      <p class="lead" data-i18n="hero.lead">Lahza is a shared camera for your events. Guests join with a QR code — no download needed. The album reveals when the moment ends.</p>
       <div class="hero-cta">
         <a href="#" class="btn btn-primary store-btn">
           <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.7c0-2 1.6-3 1.7-3a3.7 3.7 0 0 0-2.9-1.6c-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7A3.9 3.9 0 0 0 6.3 10c-1.4 2.5-.4 6.1 1 8.1.6 1 1.4 2.1 2.4 2 .9 0 1.3-.6 2.4-.6s1.4.6 2.4.6 1.7-1 2.3-2a8 8 0 0 0 1-2.1 3.5 3.5 0 0 1-2-3.3zM14.5 6.6A3.5 3.5 0 0 0 15.3 4a3.6 3.6 0 0 0-2.3 1.2 3.3 3.3 0 0 0-.8 2.5 3 3 0 0 0 2.3-1.1z"/></svg>
@@ -100,19 +104,19 @@
     <div class="stats-grid">
       <div class="stat reveal">
         <div class="stat-num"><span data-count="4.9" data-decimals="1">4.9</span><span class="accent">★</span></div>
-        <div class="stat-label">App Store</div>
+        <div class="stat-label" data-i18n="stats.appstore">App Store</div>
       </div>
       <div class="stat reveal" style="--reveal-delay:.08s">
         <div class="stat-num"><span data-count="1" data-suffix="M+">1M+</span></div>
-        <div class="stat-label">Memories Captured</div>
+        <div class="stat-label" data-i18n="stats.memories">Memories Captured</div>
       </div>
       <div class="stat reveal" style="--reveal-delay:.16s">
         <div class="stat-num"><span data-count="50" data-suffix="K+">50K+</span></div>
-        <div class="stat-label">Events Created</div>
+        <div class="stat-label" data-i18n="stats.events">Events Created</div>
       </div>
       <div class="stat reveal" style="--reveal-delay:.24s">
         <div class="stat-num">#1</div>
-        <div class="stat-label">Event Camera · App 2024</div>
+        <div class="stat-label" data-i18n="stats.rank">Event Camera · App 2024</div>
       </div>
     </div>
   </div>
@@ -122,15 +126,15 @@
 <section class="how section-pad" id="how">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Step by step</span>
-      <h2 class="h2">How a Moment<br>Becomes a Memory.</h2>
+      <span class="eyebrow" data-i18n="how.eyebrow">Step by step</span>
+      <h2 class="h2" data-i18n-html="how.title">How a Moment<br>Becomes a Memory.</h2>
     </div>
 
     <div class="step reveal">
       <div class="step-text">
         <div class="step-num">01</div>
-        <h3 class="h3">Create Your Camera</h3>
-        <p>Name your event, set how many shots each guest gets, and choose when the album reveals.</p>
+        <h3 class="h3" data-i18n="how.s1.title">Create Your Camera</h3>
+        <p data-i18n="how.s1.text">Name your event, set how many shots each guest gets, and choose when the album reveals.</p>
       </div>
       <div class="step-media">
         <div class="phone"><div class="phone-screen"><img src="assets/app-create.jpeg" alt="Create your camera"></div></div>
@@ -140,14 +144,14 @@
     <div class="step reverse reveal">
       <div class="step-text">
         <div class="step-num">02</div>
-        <h3 class="h3">Invite Your Guests</h3>
-        <p>Share a link or show a QR code. Guests join instantly — no account, no download.</p>
+        <h3 class="h3" data-i18n="how.s2.title">Invite Your Guests</h3>
+        <p data-i18n="how.s2.text">Share a link or show a QR code. Guests join instantly — no account, no download.</p>
       </div>
       <div class="step-media">
         <div class="step-frame ph" data-label="QR / Invite screen" style="aspect-ratio:535/1130; max-width:290px; border-radius:38px;">
           <div class="invite-mock">
             <div class="qr-big" id="qrBig"></div>
-            <div class="invite-label">SCAN TO JOIN</div>
+            <div class="invite-label" data-i18n="how.scan">SCAN TO JOIN</div>
             <div class="invite-event">Chloe &amp; Tyler</div>
           </div>
         </div>
@@ -157,8 +161,8 @@
     <div class="step reveal">
       <div class="step-text">
         <div class="step-num">03</div>
-        <h3 class="h3">Watch It Unfold</h3>
-        <p>When your camera closes, the album reveals. See your day through 20 different eyes.</p>
+        <h3 class="h3" data-i18n="how.s3.title">Watch It Unfold</h3>
+        <p data-i18n="how.s3.text">When your camera closes, the album reveals. See your day through 20 different eyes.</p>
       </div>
       <div class="step-media">
         <div class="phone"><div class="phone-screen"><img src="assets/app-cameras.jpeg" alt="Cameras list"></div></div>
@@ -172,16 +176,16 @@
   <div class="ph usecases-bg" id="usecaseBg" data-label=""></div>
   <div class="wrap">
     <div style="text-align:center" class="reveal">
-      <span class="eyebrow">Made for every moment</span>
-      <h2 class="h2 italic usecases-quote"><span class="qmark">“</span>Your guests captured moments you never saw.<span class="qmark">”</span></h2>
+      <span class=”eyebrow” data-i18n=”usecases.eyebrow”>Made for every moment</span>
+      <h2 class=”h2 italic usecases-quote”><span class=”qmark”>”</span><span data-i18n=”usecases.quote”>Your guests captured moments you never saw.</span><span class=”qmark”>”</span></h2>
     </div>
 
     <div class="tabs reveal" id="tabs">
-      <button class="tab active" data-tab="wedding">Wedding</button>
-      <button class="tab" data-tab="birthday">Birthday</button>
-      <button class="tab" data-tab="party">Party</button>
-      <button class="tab" data-tab="trip">Trip</button>
-      <button class="tab" data-tab="everyday">Everyday</button>
+      <button class="tab active" data-tab="wedding" data-i18n="uc.wedding">Wedding</button>
+      <button class="tab" data-tab="birthday" data-i18n="uc.birthday">Birthday</button>
+      <button class="tab" data-tab="party" data-i18n="uc.party">Party</button>
+      <button class="tab" data-tab="trip" data-i18n="uc.trip">Trip</button>
+      <button class="tab" data-tab="everyday" data-i18n="uc.everyday">Everyday</button>
     </div>
 
     <div class="usecase-stage reveal">
@@ -190,35 +194,35 @@
           <div class="phone back"><div class="phone-screen"><img src="assets/app-cameras.jpeg" alt=""></div></div>
           <div class="phone front"><div class="phone-screen"><img src="assets/app-create.jpeg" alt=""></div></div>
         </div>
-        <p class="usecase-caption">Perfect for <span class="accent">weddings</span> — see every table, every tear, every dance.</p>
+        <p class="usecase-caption" data-i18n-html="usecases.wedding">Perfect for <span class="accent">weddings</span> — see every table, every tear, every dance.</p>
       </div>
       <div class="usecase-panel" data-panel="birthday">
         <div class="usecase-phones">
           <div class="phone back"><div class="phone-screen"><img src="assets/app-create.jpeg" alt=""></div></div>
           <div class="phone front"><div class="phone-screen"><img src="assets/app-cameras.jpeg" alt=""></div></div>
         </div>
-        <p class="usecase-caption">Every <span class="accent">birthday</span> wish, candle and surprise — caught from the crowd, not just the host.</p>
+        <p class="usecase-caption" data-i18n-html="usecases.birthday">Every <span class="accent">birthday</span> wish, candle and surprise — caught from the crowd, not just the host.</p>
       </div>
       <div class="usecase-panel" data-panel="party">
         <div class="usecase-phones">
           <div class="phone back"><div class="phone-screen"><img src="assets/app-cameras.jpeg" alt=""></div></div>
           <div class="phone front"><div class="phone-screen"><img src="assets/app-create.jpeg" alt=""></div></div>
         </div>
-        <p class="usecase-caption">The <span class="accent">party</span> as everyone lived it — the late nights you'd otherwise forget.</p>
+        <p class="usecase-caption" data-i18n-html="usecases.party">The <span class="accent">party</span> as everyone lived it — the late nights you'd otherwise forget.</p>
       </div>
       <div class="usecase-panel" data-panel="trip">
         <div class="usecase-phones">
           <div class="phone back"><div class="phone-screen"><img src="assets/app-create.jpeg" alt=""></div></div>
           <div class="phone front"><div class="phone-screen"><img src="assets/app-cameras.jpeg" alt=""></div></div>
         </div>
-        <p class="usecase-caption">One shared roll for the whole <span class="accent">trip</span> — every viewpoint, one album.</p>
+        <p class="usecase-caption" data-i18n-html="usecases.trip">One shared roll for the whole <span class="accent">trip</span> — every viewpoint, one album.</p>
       </div>
       <div class="usecase-panel" data-panel="everyday">
         <div class="usecase-phones">
           <div class="phone back"><div class="phone-screen"><img src="assets/app-cameras.jpeg" alt=""></div></div>
           <div class="phone front"><div class="phone-screen"><img src="assets/app-create.jpeg" alt=""></div></div>
         </div>
-        <p class="usecase-caption">Even an <span class="accent">everyday</span> dinner becomes worth remembering when everyone shoots it.</p>
+        <p class="usecase-caption" data-i18n-html="usecases.everyday">Even an <span class="accent">everyday</span> dinner becomes worth remembering when everyone shoots it.</p>
       </div>
     </div>
   </div>
@@ -228,32 +232,32 @@
 <section class="features section-pad" id="features">
   <div class="wrap">
     <div class="section-head reveal">
-      <span class="eyebrow">Features</span>
-      <h2 class="h2">Built like a<br>disposable camera.</h2>
+      <span class="eyebrow" data-i18n="features.eyebrow">Features</span>
+      <h2 class="h2" data-i18n-html="features.title">Built like a<br>disposable camera.</h2>
     </div>
     <div class="features-grid">
       <div class="feature-card reveal">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 4l1.3 2.2h3A1.5 1.5 0 0 1 20.3 7.7v9.8A1.5 1.5 0 0 1 18.8 19H5.2A1.5 1.5 0 0 1 3.7 17.5V7.7A1.5 1.5 0 0 1 5.2 6.2h3L9.5 4z"/><circle cx="12" cy="12.4" r="3.4"/></svg></div>
-        <h3 class="h3">25 Shots.<br>Make them count.</h3>
-        <p>Each guest gets a limited number of shots — that disposable-camera feeling, where every frame matters.</p>
+        <h3 class="h3" data-i18n-html="features.f1.title">25 Shots.<br>Make them count.</h3>
+        <p data-i18n="features.f1.text">Each guest gets a limited number of shots — that disposable-camera feeling, where every frame matters.</p>
         <div class="feature-visual">
-          <div class="shot-counter"><div class="num" id="shotNum">25</div><div class="lbl">Shots Left</div></div>
+          <div class="shot-counter"><div class="num" id="shotNum">25</div><div class="lbl" data-i18n="features.f1.lbl">Shots Left</div></div>
         </div>
       </div>
 
       <div class="feature-card reveal" style="--reveal-delay:.1s">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.2"/><path d="M12 7.5V12l3 1.8"/></svg></div>
-        <h3 class="h3">The album waits.<br>The moment arrives.</h3>
-        <p>Photos stay hidden until your event ends. The big reveal turns an album into a surprise.</p>
+        <h3 class="h3" data-i18n-html="features.f2.title">The album waits.<br>The moment arrives.</h3>
+        <p data-i18n="features.f2.text">Photos stay hidden until your event ends. The big reveal turns an album into a surprise.</p>
         <div class="feature-visual">
-          <div class="clock-vis"><div class="ends">Ends at</div><div class="time">23:<span class="accent">59</span></div></div>
+          <div class="clock-vis"><div class="ends" data-i18n="features.f2.ends">Ends at</div><div class="time">23:<span class="accent">59</span></div></div>
         </div>
       </div>
 
       <div class="feature-card reveal" style="--reveal-delay:.2s">
         <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="3.5" width="7" height="7" rx="1"/><rect x="3.5" y="13.5" width="7" height="7" rx="1"/><rect x="13.5" y="3.5" width="7" height="7" rx="1"/><path d="M13.5 14h3v3M20.5 14v6.5M16.5 20.5H14"/></svg></div>
-        <h3 class="h3">QR code.<br>Instant access.</h3>
-        <p>Guests scan and shoot in seconds. No app install, no account, no friction.</p>
+        <h3 class="h3" data-i18n-html="features.f3.title">QR code.<br>Instant access.</h3>
+        <p data-i18n="features.f3.text">Guests scan and shoot in seconds. No app install, no account, no friction.</p>
         <div class="feature-visual">
           <div class="qr-vis"><div id="qrSmall"></div><div class="qr-scan"></div></div>
         </div>
@@ -266,28 +270,28 @@
 <section class="testimonials section-pad">
   <div class="wrap">
     <div class="section-head reveal" style="margin-inline:auto; text-align:center;">
-      <span class="eyebrow">Loved by thousands</span>
-      <h2 class="h2">Real events.<br>Real memories.</h2>
+      <span class="eyebrow" data-i18n="testi.eyebrow">Loved by thousands</span>
+      <h2 class="h2" data-i18n-html="testi.title">Real events.<br>Real memories.</h2>
     </div>
     <div class="testi-grid">
       <div class="testi-card reveal">
         <div class="stars">★★★★★</div>
-        <p class="testi-text">“We got 400 photos from our wedding we'd never have seen. The reveal the next morning had us both in tears.”</p>
-        <div class="testi-meta"><b>Hannah R.</b> · Wedding · May 2026</div>
+        <p class="testi-text" data-i18n="testi.1.text">“We got 400 photos from our wedding we'd never have seen. The reveal the next morning had us both in tears.”</p>
+        <div class="testi-meta" data-i18n-html="testi.1.meta"><b>Hannah R.</b> · Wedding · May 2026</div>
       </div>
       <div class="testi-card reveal" style="--reveal-delay:.1s">
         <div class="stars">★★★★★</div>
-        <p class="testi-text">“The shot limit is genius. People actually look up from their phones and make each photo count.”</p>
-        <div class="testi-meta"><b>Marco D.</b> · Birthday · Apr 2026</div>
+        <p class="testi-text" data-i18n="testi.2.text">“The shot limit is genius. People actually look up from their phones and make each photo count.”</p>
+        <div class="testi-meta" data-i18n-html="testi.2.meta"><b>Marco D.</b> · Birthday · Apr 2026</div>
       </div>
       <div class="testi-card reveal" style="--reveal-delay:.2s">
         <div class="stars">★★★★★</div>
-        <p class="testi-text">“No download for guests was the killer feature. Everyone joined in seconds, even my grandparents.”</p>
-        <div class="testi-meta"><b>Priya S.</b> · Reunion · Mar 2026</div>
+        <p class="testi-text" data-i18n="testi.3.text">“No download for guests was the killer feature. Everyone joined in seconds, even my grandparents.”</p>
+        <div class="testi-meta" data-i18n-html="testi.3.meta"><b>Priya S.</b> · Reunion · Mar 2026</div>
       </div>
     </div>
     <div style="text-align:center; margin-top:48px;" class="reveal">
-      <a href="#" class="text-link">See real events <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
+      <a href="#" class="text-link"><span data-i18n="testi.cta">See real events</span> <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a>
     </div>
   </div>
 </section>
@@ -296,18 +300,18 @@
 <section class="pricing section-pad" id="pricing">
   <div class="wrap pricing-layout">
     <div class="pricing-copy reveal">
-      <span class="eyebrow">Pricing</span>
-      <h2 class="h2">Simple, one-time<br>pricing for your event.</h2>
-      <p class="lead">You only pay once per event — no subscriptions, no renewals. Your price depends on how many guests can join and capture the moment with you.</p>
+      <span class="eyebrow" data-i18n="pricing.eyebrow">Pricing</span>
+      <h2 class="h2" data-i18n-html="pricing.title">Simple, one-time<br>pricing for your event.</h2>
+      <p class="lead" data-i18n="pricing.lead">You only pay once per event — no subscriptions, no renewals. Your price depends on how many guests can join and capture the moment with you.</p>
       <a href="#download" class="btn btn-primary store-btn">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.7c0-2 1.6-3 1.7-3a3.7 3.7 0 0 0-2.9-1.6c-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7A3.9 3.9 0 0 0 6.3 10c-1.4 2.5-.4 6.1 1 8.1.6 1 1.4 2.1 2.4 2 .9 0 1.3-.6 2.4-.6s1.4.6 2.4.6 1.7-1 2.3-2a8 8 0 0 0 1-2.1 3.5 3.5 0 0 1-2-3.3zM14.5 6.6A3.5 3.5 0 0 0 15.3 4a3.6 3.6 0 0 0-2.3 1.2 3.3 3.3 0 0 0-.8 2.5 3 3 0 0 0 2.3-1.1z"/></svg>
-        <span class="sb-main">Create your event for free</span>
+        <span class="sb-main" data-i18n="pricing.cta">Create your event for free</span>
       </a>
     </div>
 
     <div class="pricing-card reveal" style="--reveal-delay:.12s">
       <div class="pc-head">
-        <div class="pc-title">Up to<br><span id="pcCount" class="pc-anim">5</span> Participants</div>
+        <div class="pc-title"><span data-i18n="pricing.upTo">Up to</span><br><span id="pcCount" class="pc-anim">5</span> <span data-i18n="pricing.participants">Participants</span></div>
         <div class="pc-price pc-anim" id="pcPrice">Free</div>
       </div>
       <div class="pc-pills" id="pcPills">
@@ -322,15 +326,15 @@
       </div>
       <div class="pc-divider"></div>
       <div class="pc-included">
-        <span class="eyebrow">Included</span>
+        <span class="eyebrow" data-i18n="pricing.included">Included</span>
         <ul>
           <li id="pcMax">Maximum of 5 guests can join your event</li>
-          <li>Customize your album the way you want</li>
-          <li>Set how many shots each guest can take</li>
-          <li>Choose and adjust your favorite filters</li>
-          <li>See exactly who took each photo</li>
-          <li>Keep your event private and secure</li>
-          <li>Invite guests easily with a QR code or link</li>
+          <li data-i18n="pricing.inc1">Customize your album the way you want</li>
+          <li data-i18n="pricing.inc2">Set how many shots each guest can take</li>
+          <li data-i18n="pricing.inc3">Choose and adjust your favorite filters</li>
+          <li data-i18n="pricing.inc4">See exactly who took each photo</li>
+          <li data-i18n="pricing.inc5">Keep your event private and secure</li>
+          <li data-i18n="pricing.inc6">Invite guests easily with a QR code or link</li>
         </ul>
       </div>
     </div>
@@ -341,7 +345,7 @@
 <section class="final">
   <div class="ph final-bg" data-label=""></div>
   <div class="wrap">
-    <h2 class="h2 italic reveal" style="font-size:clamp(44px,6vw,80px)">Life happens once.<br>Don't let it fade away.</h2>
+    <h2 class="h2 italic reveal" style="font-size:clamp(44px,6vw,80px)" data-i18n-html="final.title">Life happens once.<br>Don't let it fade away.</h2>
     <div class="final-stores reveal" style="--reveal-delay:.1s">
       <a href="#" class="btn btn-light store-btn">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M16.4 12.7c0-2 1.6-3 1.7-3a3.7 3.7 0 0 0-2.9-1.6c-1.2-.1-2.4.7-3 .7s-1.6-.7-2.6-.7A3.9 3.9 0 0 0 6.3 10c-1.4 2.5-.4 6.1 1 8.1.6 1 1.4 2.1 2.4 2 .9 0 1.3-.6 2.4-.6s1.4.6 2.4.6 1.7-1 2.3-2a8 8 0 0 0 1-2.1 3.5 3.5 0 0 1-2-3.3zM14.5 6.6A3.5 3.5 0 0 0 15.3 4a3.6 3.6 0 0 0-2.3 1.2 3.3 3.3 0 0 0-.8 2.5 3 3 0 0 0 2.3-1.1z"/></svg>
@@ -352,7 +356,7 @@
         <span class="sb-stack"><span class="sb-top">Get it on</span><span class="sb-main">Google Play</span></span>
       </a>
     </div>
-    <p class="final-note reveal" style="--reveal-delay:.2s">Join 50,000+ hosts who've already captured their moments.</p>
+    <p class="final-note reveal" style="--reveal-delay:.2s" data-i18n="final.note">Join 50,000+ hosts who've already captured their moments.</p>
   </div>
 </section>
 
@@ -367,28 +371,29 @@
           <span class="logo-mark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M8.7 6.3l1-1.7h4.6l1 1.7h2.5A2.2 2.2 0 0 1 20 8.5v8.3A2.2 2.2 0 0 1 17.8 19H6.2A2.2 2.2 0 0 1 4 16.8V8.5a2.2 2.2 0 0 1 2.2-2.2z"/><circle cx="12" cy="12.9" r="3.3"/><path d="M10.1 11.6a2.5 2.5 0 0 1 1.9-1" stroke-width="1.3"/></svg></span>
           <span class="logo-word">Lah<b>za</b></span>
         </a>
-        <p>A shared camera for your events. Capture your day through everyone's eyes.</p>
+        <p data-i18n="footer.tagline">A shared camera for your events. Capture your day through everyone's eyes.</p>
       </div>
       <div class="footer-col">
-        <h4>Product</h4>
-        <ul><li><a href="#how">How it Works</a></li><li><a href="#features">Features</a></li><li><a href="#pricing">Pricing</a></li></ul>
+        <h4 data-i18n="footer.product">Product</h4>
+        <ul><li><a href="#how" data-i18n="nav.how">How it Works</a></li><li><a href="#features" data-i18n="nav.features">Features</a></li><li><a href="#pricing" data-i18n="nav.pricing">Pricing</a></li></ul>
       </div>
       <div class="footer-col">
-        <h4>Use Cases</h4>
-        <ul><li><a href="#usecases">Wedding</a></li><li><a href="#usecases">Birthday</a></li><li><a href="#usecases">Party</a></li><li><a href="#usecases">Trip</a></li><li><a href="#usecases">Everyday</a></li></ul>
+        <h4 data-i18n="footer.useCases">Use Cases</h4>
+        <ul><li><a href="#usecases" data-i18n="uc.wedding">Wedding</a></li><li><a href="#usecases" data-i18n="uc.birthday">Birthday</a></li><li><a href="#usecases" data-i18n="uc.party">Party</a></li><li><a href="#usecases" data-i18n="uc.trip">Trip</a></li><li><a href="#usecases" data-i18n="uc.everyday">Everyday</a></li></ul>
       </div>
       <div class="footer-col">
-        <h4>Company</h4>
-        <ul><li><a href="blog.html">Blog</a></li><li><a href="privacy.html">Privacy Policy</a></li><li><a href="terms.html">Terms of Use</a></li></ul>
+        <h4 data-i18n="footer.company">Company</h4>
+        <ul><li><a href="blog.html" data-i18n="nav.blog">Blog</a></li><li><a href="privacy.html" data-i18n="footer.privacy">Privacy Policy</a></li><li><a href="terms.html" data-i18n="footer.terms">Terms of Use</a></li></ul>
       </div>
     </div>
     <div class="footer-bar">
-      <span>© 2026 Lahza. All rights reserved.</span>
-      <span>Made with <span class="heart">♥</span> for memories.</span>
+      <span data-i18n="footer.rights">© 2026 Lahza. All rights reserved.</span>
+      <span data-i18n-html="footer.made">Made with <span class="heart">♥</span> for memories.</span>
     </div>
   </div>
 </footer>
 
+<script src="js/i18n.js"></script>
 <script src="js/main.js"></script>
 </body>
 </html>

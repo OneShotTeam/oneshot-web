@@ -31,18 +31,23 @@ h1{font-size:23px;font-weight:800;letter-spacing:-.5px;text-align:center}
 </head>
 <body>
 
+<div class="lang-toggle" style="position:fixed;top:14px;right:14px;z-index:50">
+  <button data-lang-btn="en" onclick="LahzaI18N.set('en')">EN</button>
+  <button data-lang-btn="tr" onclick="LahzaI18N.set('tr')">TR</button>
+</div>
+
 <div class="card" id="checking-view">
   <div class="checking">
     <div class="spinner"></div>
-    <span>Checking session…</span>
+    <span data-i18n="auth.checking">Checking session…</span>
   </div>
 </div>
 
 <div class="card hidden" id="signin-view">
   <div class="logo-mark">📷</div>
-  <h1>Join the moment</h1>
-  <p class="sub">Sign in to take photos for this event. Your shots are saved to the shared gallery.</p>
-  <div class="event-badge">Joining <b id="ename-label">the event</b></div>
+  <h1 data-i18n="auth.title">Join the moment</h1>
+  <p class="sub" data-i18n="auth.sub">Sign in to take photos for this event. Your shots are saved to the shared gallery.</p>
+  <div class="event-badge"><span data-i18n="auth.joining">Joining</span> <b id="ename-label">the event</b></div>
   <div class="btns">
     <button class="btn" id="google-btn" onclick="signIn('google')">
       <svg class="btn-icon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -51,18 +56,19 @@ h1{font-size:23px;font-weight:800;letter-spacing:-.5px;text-align:center}
         <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/>
         <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/>
       </svg>
-      Continue with Google
+      <span data-i18n="auth.google">Continue with Google</span>
     </button>
     <button class="btn" id="apple-btn" onclick="signIn('apple')">
       <svg class="btn-icon" viewBox="0 0 24 24" fill="var(--ink)" xmlns="http://www.w3.org/2000/svg">
         <path d="M18.71 19.5c-.83 1.24-1.71 2.45-3.05 2.47-1.34.03-1.77-.79-3.29-.79-1.53 0-2 .77-3.27.82-1.31.05-2.3-1.32-3.14-2.53C4.25 17 2.94 12.45 4.7 9.39c.87-1.52 2.43-2.48 4.12-2.51 1.28-.02 2.5.87 3.29.87.78 0 2.26-1.07 3.8-.91.65.03 2.47.26 3.64 1.98-.09.06-2.17 1.28-2.15 3.81.03 3.02 2.65 4.03 2.68 4.04-.03.07-.42 1.44-1.38 2.83M13 3.5c.73-.83 1.94-1.46 2.94-1.5.13 1.17-.34 2.35-1.04 3.19-.69.85-1.83 1.51-2.95 1.42-.15-1.15.41-2.35 1.05-3.11z"/>
       </svg>
-      Continue with Apple
+      <span data-i18n="auth.apple">Continue with Apple</span>
     </button>
   </div>
-  <p class="note">By continuing you agree to share your photos in the event gallery and accept our <a href="terms.html" style="color:var(--ink60);text-decoration:underline">Terms</a> &amp; <a href="privacy.html" style="color:var(--ink60);text-decoration:underline">Privacy Policy</a>. We only use your account to link your contributions.</p>
+  <p class="note" data-i18n-html="auth.note">By continuing you agree to share your photos in the event gallery and accept our <a href="terms.html" style="color:var(--ink60);text-decoration:underline">Terms</a> &amp; <a href="privacy.html" style="color:var(--ink60);text-decoration:underline">Privacy Policy</a>. We only use your account to link your contributions.</p>
 </div>
 
+<script src="js/i18n.js"></script>
 <script>
 const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
@@ -93,7 +99,7 @@ const ename = params.get('name') || sessionStorage.getItem('lahza_name') || '';
 })();
 
 function showSignIn() {
-  document.getElementById('ename-label').textContent = ename || 'the event';
+  document.getElementById('ename-label').textContent = ename || (window.LahzaI18N ? LahzaI18N.t('auth.theEvent') : 'the event');
   document.getElementById('checking-view').classList.add('hidden');
   document.getElementById('signin-view').classList.remove('hidden');
 }
@@ -108,7 +114,7 @@ async function signIn(provider) {
     });
   } catch (e) {
     btns.forEach(b => b.disabled = false);
-    alert('Sign-in failed. Please try again.');
+    alert(window.LahzaI18N ? LahzaI18N.t('auth.failed') : 'Sign-in failed. Please try again.');
   }
 }
 </script>

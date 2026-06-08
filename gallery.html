@@ -51,9 +51,14 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
 </head>
 <body>
 
+<div class="lang-toggle" style="position:fixed;top:14px;right:14px;z-index:60">
+  <button data-lang-btn="en" onclick="LahzaI18N.set('en')">EN</button>
+  <button data-lang-btn="tr" onclick="LahzaI18N.set('tr')">TR</button>
+</div>
+
 <div id="loader" class="state">
   <div class="spinner"></div>
-  <p style="font-size:13px;color:var(--ink60)">Loading gallery…</p>
+  <p style="font-size:13px;color:var(--ink60)" data-i18n="gal.loading">Loading gallery…</p>
 </div>
 
 <div id="content" class="hidden">
@@ -63,7 +68,7 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   </div>
 
   <div class="title-block">
-    <div class="eyebrow">📸 The Album</div>
+    <div class="eyebrow" data-i18n="gal.album">📸 The Album</div>
     <div class="ename" id="ename">—</div>
     <div class="esub" id="esub"></div>
   </div>
@@ -71,16 +76,16 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   <!-- Locked (event still live) -->
   <div id="locked" class="state hidden">
     <div class="state-icon">🔒</div>
-    <div class="state-title">The album is still developing</div>
-    <div class="state-sub">Photos stay hidden until the event ends. Come back for the big reveal.</div>
+    <div class="state-title" data-i18n="gal.lockedTitle">The album is still developing</div>
+    <div class="state-sub" data-i18n="gal.lockedSub">Photos stay hidden until the event ends. Come back for the big reveal.</div>
     <div class="countdown" id="countdown"></div>
   </div>
 
   <!-- Empty -->
   <div id="empty" class="state hidden">
     <div class="state-icon">🎞</div>
-    <div class="state-title">No photos yet</div>
-    <div class="state-sub">No one has added a shot to this album yet.</div>
+    <div class="state-title" data-i18n="gal.emptyTitle">No photos yet</div>
+    <div class="state-sub" data-i18n="gal.emptySub">No one has added a shot to this album yet.</div>
   </div>
 
   <!-- Revealed -->
@@ -95,8 +100,8 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
 <!-- Error -->
 <div id="err" class="state hidden">
   <div class="state-icon">📷</div>
-  <div class="state-title">Gallery not found</div>
-  <div class="state-sub">This link may have expired or been removed.</div>
+  <div class="state-title" data-i18n="gal.notFoundTitle">Gallery not found</div>
+  <div class="state-sub" data-i18n="gal.notFoundSub">This link may have expired or been removed.</div>
 </div>
 
 <div id="lightbox">
@@ -105,19 +110,22 @@ body{font-family:-apple-system,'SF Pro Display','Helvetica Neue',sans-serif;back
   <div id="lb-by"></div>
 </div>
 
+<script src="js/i18n.js"></script>
 <script>
 const SUPA = 'https://qmbnjgtkwsggfoefgvvg.supabase.co';
 const ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFtYm5qZ3Rrd3NnZ2ZvZWZndnZnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODA2NjI4MjgsImV4cCI6MjA5NjIzODgyOH0.ABMprDSnHwGdOfeDB16_J-f8Hr_ZXqLOMufYsIemXCc';
 
-/* Photos live in a PRIVATE bucket, so they're fetched through the join
-   edge function's `gallery` action: it runs with the service role, checks
-   the event has ended, and returns short-lived signed URLs + uploader name. */
-const EDGE = `${SUPA}/functions/v1/join`;
+/* Photos are read directly from Supabase REST. The `photos` table has an
+   RLS policy exposing rows only for ended events, and images live in the
+   now-public `photos` bucket. Uploader name comes from profiles.username. */
+const STORAGE_BUCKET = 'photos';
 
 const hdrs = { apikey: ANON, Authorization: 'Bearer ' + ANON };
 const slug = new URLSearchParams(location.search).get('slug') || sessionStorage.getItem('lahza_slug') || '';
 
 const $ = id => document.getElementById(id);
+const T = (k, v) => (window.LahzaI18N ? LahzaI18N.t(k, v) : k);
+let galState = null, galCount = 0;
 
 (async function init() {
   if (!slug) return showErr();
@@ -142,7 +150,8 @@ const $ = id => document.getElementById(id);
 
   // Revealed — load photos
   const photos = await loadPhotos(ev);
-  $('count-badge').textContent = photos.length === 1 ? '1 photo' : `${photos.length} photos`;
+  galState = 'revealed'; galCount = photos.length;
+  $('count-badge').textContent = photos.length === 1 ? '1 ' + T('gal.photo') : photos.length + ' ' + T('gal.photos');
 
   if (!photos.length) { $('empty').classList.remove('hidden'); return; }
   renderGrid(photos);
@@ -155,17 +164,28 @@ function isEnded(ev) {
 }
 
 async function loadPhotos(ev) {
-  const fd = new FormData();
-  fd.append('action', 'gallery');
-  fd.append('slug', slug);
-  try {
-    const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method: 'POST', headers: hdrs, body: fd });
-    const data = await r.json();
-    if (!data || !Array.isArray(data.photos)) return [];
-    return data.photos
-      .map(p => ({ url: p.url, by: p.by || '' }))
-      .filter(p => p.url);
-  } catch (_) { return []; }
+  const now  = new Date().toISOString();
+  const base = `${SUPA}/rest/v1/photos?event_id=eq.${encodeURIComponent(ev.id)}`
+             + `&is_deleted=eq.false&reveal_at=lte.${encodeURIComponent(now)}`
+             + `&order=taken_at.desc`;
+  // Embed the uploader's name via the explicit FK (plain `profiles` is
+  // ambiguous — photo_likes is a second relationship); fall back without it.
+  for (const sel of ['storage_path,taken_at,profiles!photos_uploader_id_fkey(username)', 'storage_path,taken_at']) {
+    try {
+      const r = await fetch(`${base}&select=${sel}`, { headers: hdrs });
+      if (!r.ok) continue;
+      const rows = await r.json();
+      return rows.map(toPhoto).filter(p => p.url);
+    } catch (_) {}
+  }
+  return [];
+}
+
+function toPhoto(row) {
+  const path = row.storage_path || '';
+  const url  = path ? `${SUPA}/storage/v1/object/public/${STORAGE_BUCKET}/${path.replace(/^\/+/, '')}` : '';
+  const by   = (row.profiles && row.profiles.username) || '';
+  return { url, by };
 }
 
 function renderGrid(photos) {
@@ -182,8 +202,9 @@ function renderGrid(photos) {
 }
 
 function showLocked(ev) {
+  galState = 'locked';
   $('locked').classList.remove('hidden');
-  $('count-badge').textContent = '🔒 Locked';
+  $('count-badge').textContent = T('gal.locked');
   if (!ev.ends_at) { $('countdown').style.display = 'none'; return; }
   const target = new Date(ev.ends_at).getTime();
   const tick = () => {
@@ -192,7 +213,7 @@ function showLocked(ev) {
     const s = Math.floor(d / 1000);
     const days = Math.floor(s / 86400), hrs = Math.floor(s % 86400 / 3600),
           min = Math.floor(s % 3600 / 60), sec = s % 60;
-    $('countdown').innerHTML = [[days,'days'],[hrs,'hrs'],[min,'min'],[sec,'sec']]
+    $('countdown').innerHTML = [[days,T('gal.cd.days')],[hrs,T('gal.cd.hrs')],[min,T('gal.cd.min')],[sec,T('gal.cd.sec')]]
       .map(([n, l]) => `<div class="cd-cell"><div class="cd-num">${String(n).padStart(2,'0')}</div><div class="cd-lbl">${l}</div></div>`)
       .join('');
   };
@@ -204,13 +225,18 @@ function showLocked(ev) {
 const lb = $('lightbox');
 function openLightbox(p) {
   $('lb-img').src = p.url;
-  $('lb-by').textContent = p.by ? 'by ' + p.by : '';
+  $('lb-by').textContent = p.by ? T('gal.by') + ' ' + p.by : '';
   lb.classList.add('open');
 }
 function closeLightbox() { lb.classList.remove('open'); $('lb-img').src = ''; }
 $('lb-close').addEventListener('click', closeLightbox);
 lb.addEventListener('click', e => { if (e.target === lb) closeLightbox(); });
 document.addEventListener('keydown', e => { if (e.key === 'Escape') closeLightbox(); });
+
+document.addEventListener('lahza:langchange', () => {
+  if (galState === 'locked') $('count-badge').textContent = T('gal.locked');
+  else if (galState === 'revealed') $('count-badge').textContent = galCount === 1 ? '1 ' + T('gal.photo') : galCount + ' ' + T('gal.photos');
+});
 
 function showErr() {
   $('loader').classList.add('hidden');
