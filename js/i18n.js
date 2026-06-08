@@ -14,7 +14,7 @@
     en: {
       /* ---- nav / footer (marketing) ---- */
       'nav.blog': 'Blog',
-      'nav.how': 'How it Works',
+      'nav.how': 'How It Works',
       'nav.features': 'Features',
       'nav.pricing': 'Pricing',
       'nav.download': 'Download',
@@ -33,15 +33,15 @@
       'uc.everyday': 'Everyday',
 
       /* ---- index: hero ---- */
-      'hero.eyebrow': 'A shared camera for your events',
+      'hero.eyebrow': 'What is Lahza?',
       'hero.title': 'Capture your day<br>through <span class="accent">everyone’s eyes.</span>',
-      'hero.lead': 'Lahza is a shared camera for your events. Guests join with a QR code — no download needed. The album reveals when the moment ends.',
+      'hero.lead': 'Lahza brings everyone’s camera together into one shared album. Guests join with a QR code, and when the moment ends, the album reveals — letting you see your day through eyes you never could have seen through.',
 
       /* ---- index: stats ---- */
       'stats.appstore': 'App Store',
       'stats.memories': 'Memories Captured',
       'stats.events': 'Events Created',
-      'stats.rank': 'Event Camera · App 2024',
+      'stats.rank': 'Event Camera · 2026',
 
       /* ---- index: how ---- */
       'how.eyebrow': 'Step by step',
@@ -55,13 +55,21 @@
       'how.s3.text': 'When your camera closes, the album reveals. See your day through 20 different eyes.',
 
       /* ---- index: usecases ---- */
-      'usecases.eyebrow': 'Made for every moment',
-      'usecases.quote': 'Your guests captured moments you never saw.',
-      'usecases.wedding': 'Perfect for <span class="accent">weddings</span> — see every table, every tear, every dance.',
-      'usecases.birthday': 'Every <span class="accent">birthday</span> wish, candle and surprise — caught from the crowd, not just the host.',
-      'usecases.party': 'The <span class="accent">party</span> as everyone lived it — the late nights you’d otherwise forget.',
-      'usecases.trip': 'One shared roll for the whole <span class="accent">trip</span> — every viewpoint, one album.',
-      'usecases.everyday': 'Even an <span class="accent">everyday</span> dinner becomes worth remembering when everyone shoots it.',
+      'usecases.eyebrow.wedding': 'For Weddings',
+      'usecases.eyebrow.birthday': 'For Birthdays',
+      'usecases.eyebrow.party': 'For Parties',
+      'usecases.eyebrow.trip': 'For Trips',
+      'usecases.eyebrow.everyday': 'For Every Moment',
+      'usecases.quote.wedding': 'Your guests captured the moments you never saw.',
+      'usecases.quote.birthday': 'Every wish, every candle, every surprise — from the whole crowd, not just you.',
+      'usecases.quote.party': 'The night everyone experienced — not just the late hours you’ll forget.',
+      'usecases.quote.trip': 'One roll, every perspective — every moment in a single album.',
+      'usecases.quote.everyday': 'Even an ordinary evening becomes worth remembering when everyone captures it.',
+      'usecases.wedding': 'Perfect for <span class="accent">weddings</span> — every table, every tear, every dance.',
+      'usecases.birthday': 'Every <span class="accent">birthday</span> wish, candle, and surprise — from the whole crowd, not just the host.',
+      'usecases.party': 'The <span class="accent">party</span> as everyone experienced it — not just the late hours you’ll forget.',
+      'usecases.trip': 'One shared roll for the entire <span class="accent">trip</span> — every perspective, one album.',
+      'usecases.everyday': 'Even an <span class="accent">everyday</span> dinner becomes worth remembering when everyone captures it.',
 
       /* ---- index: features ---- */
       'features.eyebrow': 'Features',
@@ -97,7 +105,7 @@
       'pricing.included': 'Included',
       'pricing.perEvent': ' / event',
       'pricing.letsTalk': 'Let’s talk',
-      'pricing.maxGuests': 'Maximum of {n} guests can join your event',
+      'pricing.maxGuests': 'Up to {n} guests can join your event',
       'pricing.customMax': 'More than 200 guests — we’ll tailor a plan for you',
       'pricing.inc1': 'Customize your album the way you want',
       'pricing.inc2': 'Set how many shots each guest can take',
@@ -108,7 +116,7 @@
 
       /* ---- index: final ---- */
       'final.title': 'Life happens once.<br>Don’t let it fade away.',
-      'final.note': 'Join 50,000+ hosts who’ve already captured their moments.',
+      'final.note': 'Join 500+ hosts who’ve already captured their moments.',
 
       /* ---- blog ---- */
       'blog.eyebrow': 'The Journal',
@@ -237,15 +245,15 @@
       'uc.everyday': 'Günlük',
 
       /* ---- index: hero ---- */
-      'hero.eyebrow': 'Etkinlikleriniz için ortak kamera',
+      'hero.eyebrow': 'Lahza Nedir?',
       'hero.title': 'Gününüzü<br><span class="accent">herkesin gözünden</span> yakalayın.',
-      'hero.lead': 'Lahza, etkinlikleriniz için ortak bir kameradır. Misafirler QR kodla katılır — uygulama indirmeye gerek yok. An sona erdiğinde albüm açılır.',
+      'hero.lead': 'Lahza, etkinliklerinizde herkesin kamerasını tek bir albümde birleştirir. Misafirler QR kodla katılır, an sona erince albüm açılır — ve gününüzü hiç göremeyeceğiniz gözlerden görürsünüz.',
 
       /* ---- index: stats ---- */
       'stats.appstore': 'App Store',
       'stats.memories': 'Yakalanan Anı',
       'stats.events': 'Oluşturulan Etkinlik',
-      'stats.rank': 'Etkinlik Kamerası · Uygulama 2024',
+      'stats.rank': 'Etkinlik Kamerası · 2026',
 
       /* ---- index: how ---- */
       'how.eyebrow': 'Adım adım',
@@ -259,8 +267,16 @@
       'how.s3.text': 'Kameranız kapanınca albüm açılır. Gününüzü 20 farklı gözden görün.',
 
       /* ---- index: usecases ---- */
-      'usecases.eyebrow': 'Her an için',
-      'usecases.quote': 'Misafirleriniz, sizin hiç görmediğiniz anları yakaladı.',
+      'usecases.eyebrow.wedding': 'Düğünler İçin',
+      'usecases.eyebrow.birthday': 'Doğum Günleri İçin',
+      'usecases.eyebrow.party': 'Partiler İçin',
+      'usecases.eyebrow.trip': 'Geziler İçin',
+      'usecases.eyebrow.everyday': 'Her An İçin',
+      'usecases.quote.wedding': 'Hiç göremeyeceğiniz anları misafirleriniz sizin için yakaladı.',
+      'usecases.quote.birthday': 'Her doğum günü dileği, mumu ve sürprizi — sadece ev sahibinden değil, kalabalıktan.',
+      'usecases.quote.party': 'Herkesin yaşadığı gece — yoksa unutacağınız geç saatler.',
+      'usecases.quote.trip': 'Tek rulo, tüm bakış açıları — her an, tek albümde.',
+      'usecases.quote.everyday': 'Sıradan bir akşam bile, herkes çekince hatırlamaya değer olur.',
       'usecases.wedding': '<span class="accent">Düğünler</span> için mükemmel — her masa, her gözyaşı, her dans.',
       'usecases.birthday': 'Her <span class="accent">doğum günü</span> dileği, mumu ve sürprizi — sadece ev sahibinden değil, kalabalıktan.',
       'usecases.party': '<span class="accent">Parti</span> herkesin yaşadığı gibi — yoksa unutacağınız geç saatler.',
@@ -312,7 +328,7 @@
 
       /* ---- index: final ---- */
       'final.title': 'Hayat bir kez yaşanır.<br>Solup gitmesine izin vermeyin.',
-      'final.note': 'Anılarını çoktan yakalamış 50.000’den fazla ev sahibine katılın.',
+      'final.note': 'Anılarını çoktan yakalamış 500’den fazla ev sahibine katılın.',
 
       /* ---- blog ---- */
       'blog.eyebrow': 'Günlük',

@@ -110,7 +110,16 @@
   var tabs = document.querySelectorAll('.tab');
   var panels = document.querySelectorAll('.usecase-panel');
   var bg = document.getElementById('usecaseBg');
+  var ucEyebrow = document.getElementById('ucEyebrow');
+  var ucQuote = document.getElementById('ucQuote');
+  var activeUc = 'wedding';
   var bgLabels = { wedding: 'WEDDING PHOTO · B&W', birthday: 'BIRTHDAY PHOTO · SEPIA', party: 'PARTY PHOTO · B&W', trip: 'TRIP PHOTO · SEPIA', everyday: 'EVERYDAY PHOTO · B&W' };
+  function setUseCaseText(key) {
+    activeUc = key;
+    if (!window.LahzaI18N) return;
+    if (ucEyebrow) ucEyebrow.textContent = LahzaI18N.t('usecases.eyebrow.' + key);
+    if (ucQuote) ucQuote.textContent = LahzaI18N.t('usecases.quote.' + key);
+  }
   tabs.forEach(function (tab) {
     tab.addEventListener('click', function () {
       var key = tab.getAttribute('data-tab');
@@ -120,8 +129,11 @@
         p.classList.toggle('active', p.getAttribute('data-panel') === key);
       });
       if (bg) bg.setAttribute('data-label', bgLabels[key] || '');
+      setUseCaseText(key);
     });
   });
+  setUseCaseText('wedding');
+  document.addEventListener('lahza:langchange', function () { setUseCaseText(activeUc); });
 
   /* ---- QR placeholder generator (deterministic block grid) ---- */
   function makeQR(size, modules) {
