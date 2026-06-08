@@ -7,6 +7,7 @@
 <meta name="theme-color" content="#000000">
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=DM+Mono:wght@500&family=Hanken+Grotesk:wght@400;600;700&family=Instrument+Serif:ital@1&display=swap" rel="stylesheet">
@@ -123,6 +124,24 @@ body{
   color:var(--ink);font-family:'Hanken Grotesk',sans-serif;font-weight:700;font-size:14.5px;cursor:pointer;display:inline-flex;align-items:center;gap:8px}
 
 input[type=file]{display:none}
+/* Thumb mini-gallery count badge */
+.thumb-count{position:absolute;right:3px;bottom:3px;min-width:17px;height:17px;padding:0 4px;border-radius:9px;background:var(--gold);color:var(--bg);font-family:'DM Mono',monospace;font-size:10.5px;font-weight:500;display:flex;align-items:center;justify-content:center;line-height:1;box-shadow:0 1px 5px rgba(0,0,0,.45)}
+/* Overlay shared header */
+.ov-top{display:flex;align-items:center;gap:10px;padding:max(env(safe-area-inset-top),16px) 16px 12px;border-bottom:1px solid var(--line)}
+/* My photos overlay */
+#myGallery{position:fixed;inset:0;z-index:85;display:none;flex-direction:column;background:var(--bg)}
+.mg-grid{flex:1;overflow-y:auto;columns:3;column-gap:4px;padding:8px 8px calc(env(safe-area-inset-bottom,0px) + 16px)}
+.mg-grid img{width:100%;margin-bottom:4px;border-radius:8px;display:block;break-inside:avoid;filter:contrast(1.06) saturate(.9) sepia(.08)}
+.mg-empty{flex:1;display:flex;align-items:center;justify-content:center;color:var(--ink60);font-size:14px;padding:32px;text-align:center}
+/* Share overlay */
+#share{position:fixed;inset:0;z-index:85;display:none;flex-direction:column;background:var(--bg)}
+.sh-body{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;padding:8px 28px 0;text-align:center}
+.sh-desc{font-size:14.5px;color:var(--ink60);line-height:1.6;max-width:300px}
+.sh-qr{width:230px;max-width:64vw;background:#fff;padding:16px;border-radius:20px;border:2px solid rgba(231,180,90,.5);box-shadow:0 10px 40px rgba(0,0,0,.45)}
+.sh-qr img,.sh-qr svg{width:100%;height:auto;display:block;image-rendering:pixelated}
+.sh-code{font-family:'DM Mono',monospace;font-size:14px;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase}
+.sh-bottom{padding:16px 20px calc(env(safe-area-inset-bottom,0px) + 28px)}
+.sh-bottom .send{width:100%}
 .hidden{display:none!important}
 </style>
 </head>
@@ -225,7 +244,41 @@ input[type=file]{display:none}
   </button>
 </div>
 
-<input type="file" id="file-input" accept="image/*" capture="environment">
+<!-- My photos (this event) -->
+<div id="myGallery">
+  <div class="ov-top">
+    <button class="icon-btn" id="mg-back" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <div class="pv-title" data-i18n="cam.myPhotosTitle">Your photos</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="mg-grid" id="mg-grid"></div>
+</div>
+
+<!-- Share: QR + link -->
+<div id="share">
+  <div class="ov-top">
+    <button class="icon-btn" id="sh-back" aria-label="Back">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>
+    </button>
+    <div class="pv-title" data-i18n="cam.shareTitle">Share the Camera</div>
+    <div style="width:40px"></div>
+  </div>
+  <div class="sh-body">
+    <p class="sh-desc" data-i18n="cam.shareDesc">Anyone can join by scanning the QR code or opening the link. No app download needed!</p>
+    <div class="sh-qr" id="share-qr"></div>
+    <div class="sh-code" id="share-code"></div>
+  </div>
+  <div class="sh-bottom">
+    <button class="send" id="sh-link">
+      <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12v7a1 1 0 0 0 1 1h14a1 1 0 0 0 1-1v-7"/><path d="M12 16V4"/><path d="M8 8l4-4 4 4"/></svg>
+      <span data-i18n="cam.shareLink">Share Link</span>
+    </button>
+  </div>
+</div>
+
+<input type="file" id="file-input" accept="image/*" multiple>
 
 <canvas id="canvas" class="hidden"></canvas>
 
@@ -248,7 +301,8 @@ const TONE_FILTERS = {
   none:      'none',
 };
 
-let userId = null, shotsLeft = 0, shotsLimit = 10, shotsUsed = 0;
+let userId = null, eventId = null, shotsLeft = 0, shotsLimit = 10, shotsUsed = 0;
+let myPhotos = [], shareQrDone = false;
 let eventName = '', endsAt = null, tone = 'nostalgic';
 let stream = null, track = null, facing = 'environment';
 let capturedBlob = null, captureUrl = null, sending = false;
@@ -292,15 +346,16 @@ function toneFilter(){ return TONE_FILTERS[tone] || TONE_FILTERS.nostalgic; }
   shotsUsed  = reg.shots_used ?? 0;
 
   try {
-    const r = await fetch(`${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=name,ends_at,cover_tone&limit=1`,
+    const r = await fetch(`${SUPA}/rest/v1/events?slug=eq.${encodeURIComponent(slug)}&select=id,name,ends_at,cover_tone&limit=1`,
       { headers: { apikey: ANON, Authorization: 'Bearer ' + ANON } });
     const [ev] = await r.json();
-    if (ev){ eventName = ev.name; endsAt = ev.ends_at; tone = ev.cover_tone || 'nostalgic'; }
+    if (ev){ eventId = ev.id; eventName = ev.name; endsAt = ev.ends_at; tone = ev.cover_tone || 'nostalgic'; }
   } catch(_){}
 
   $('ev-name').textContent = eventName;
   $('ev-ends').textContent = fmtEnds(endsAt);
   updateShots();
+  loadMyPhotos();
 
   if (shotsLeft <= 0){ showDone(shotsUsed >= shotsLimit); return; }
 
@@ -420,26 +475,28 @@ function hidePreview(){ $('preview').style.display = 'none'; capturedBlob = null
 
 /* Gallery pick fallback — upload original, show tone only as preview */
 function onPick(e){
-  const f = e.target.files && e.target.files[0];
+  const files = Array.from(e.target.files || []);
   e.target.value = '';
-  if (!f) return;
-  f._baked = false;            // not tone-baked → apply filter visually on preview
-  showPreview(f);
+  if (!files.length) return;
+  if (shotsLeft <= 0){ toast(T('cam.noShots'), 'err'); return; }
+  if (files.length > shotsLeft){
+    toast(T('cam.tooMany', { n: shotsLeft }), 'err', 3500);
+    return;
+  }
+  if (files.length === 1){
+    files[0]._baked = false;     // not tone-baked → apply filter visually on preview
+    showPreview(files[0]);
+  } else {
+    uploadBatch(files);
+  }
 }
 
 /* ── Send ─────────────────────────────────────────── */
-async function send(){
-  if (!capturedBlob || sending) return;
-  if (shotsLeft <= 0){ toast(T('cam.noShots'), 'err'); return; }
-  sending = true;
-  const btn = $('pv-send');
-  btn.disabled = true; btn.textContent = T('cam.uploading');
-
+async function uploadOne(blob){
   const fd = new FormData();
   fd.append('slug', slug);
   fd.append('user_id', userId);
-  fd.append('photo', capturedBlob, 'photo.jpg');
-
+  fd.append('photo', blob, 'photo.jpg');
   try {
     const r = await fetch(`${EDGE}?slug=${encodeURIComponent(slug)}`, { method:'POST', headers: AUTH, body: fd });
     const data = await r.json();
@@ -447,32 +504,101 @@ async function send(){
       shotsLeft = Math.max(0, shotsLeft - 1);
       shotsUsed += 1;
       updateShots();
-      setThumb(captureUrl);
-      hidePreview();
-      resetSendBtn();
-      sending = false;
-      if (shotsLeft <= 0){ showDone(false); return; }
-      toast(T('cam.added'), 'ok');
-    } else {
-      toast('Error: ' + (data.error || data.message || T('cam.uploadFail')), 'err', 3000);
-      resetSendBtn(); sending = false;
+      addMyPhoto(URL.createObjectURL(blob));
+      return true;
     }
+    toast('Error: ' + (data.error || data.message || T('cam.uploadFail')), 'err', 3000);
+    return false;
   } catch(e){
     toast(T('cam.netErr'), 'err', 3000);
-    resetSendBtn(); sending = false;
+    return false;
   }
 }
+
+async function send(){
+  if (!capturedBlob || sending) return;
+  if (shotsLeft <= 0){ toast(T('cam.noShots'), 'err'); return; }
+  sending = true;
+  const btn = $('pv-send');
+  btn.disabled = true; btn.textContent = T('cam.uploading');
+  const ok = await uploadOne(capturedBlob);
+  hidePreview();
+  resetSendBtn();
+  sending = false;
+  if (ok){
+    if (shotsLeft <= 0){ showDone(false); return; }
+    toast(T('cam.added'), 'ok');
+  }
+}
+
+// Multi-pick upload from the device gallery, capped at remaining shots.
+async function uploadBatch(files){
+  if (sending) return;
+  sending = true;
+  for (let i = 0; i < files.length; i++){
+    if (shotsLeft <= 0) break;
+    toast(T('cam.uploadingN', { i: i + 1, n: files.length }), 'info', 60000);
+    const ok = await uploadOne(files[i]);
+    if (!ok){ sending = false; return; }
+  }
+  sending = false;
+  toast(T('cam.added'), 'ok');
+  if (shotsLeft <= 0) showDone(false);
+}
+
 function resetSendBtn(){
   const btn = $('pv-send');
   btn.disabled = false;
   btn.innerHTML = '<svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 2L11 13"/><path d="M22 2l-7 20-4-9-9-4 20-7z"/></svg> ' + T('cam.send');
 }
-function setThumb(url){
-  const t = $('thumb');
-  t.innerHTML = '';
-  const img = document.createElement('img');
-  img.src = url; t.appendChild(img);
+
+/* ── My photos (bottom-right mini gallery) ───────────── */
+async function loadMyPhotos(){
+  if (!eventId || !userId) return;
+  try {
+    const { data, error } = await sb.from('photos')
+      .select('storage_path, taken_at')
+      .eq('event_id', eventId).eq('uploader_id', userId).eq('is_deleted', false)
+      .order('taken_at', { ascending: false });
+    if (error || !data) return;
+    myPhotos = data.map(r => ({ url: `${SUPA}/storage/v1/object/public/photos/${r.storage_path}` }));
+    renderThumb();
+  } catch(_){}
 }
+function addMyPhoto(url){ myPhotos.unshift({ url: url }); renderThumb(); }
+function renderThumb(){
+  const t = $('thumb');
+  if (!myPhotos.length){
+    t.innerHTML = '<span class="ph"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="M21 16l-5-5L5 19"/></svg></span>';
+    return;
+  }
+  t.innerHTML = '<img src="' + myPhotos[0].url + '" alt="">' +
+    (myPhotos.length > 1 ? '<span class="thumb-count">' + myPhotos.length + '</span>' : '');
+}
+function openMyGallery(){
+  const g = $('mg-grid');
+  g.innerHTML = myPhotos.length
+    ? myPhotos.map(p => '<img loading="lazy" src="' + p.url + '" alt="">').join('')
+    : '<div class="mg-empty">' + T('cam.noMyPhotos') + '</div>';
+  $('myGallery').style.display = 'flex';
+}
+function closeMyGallery(){ $('myGallery').style.display = 'none'; }
+
+/* ── Share (QR + link) ───────────────────────────────── */
+function openShare(){
+  if (!shareQrDone && window.qrcode){
+    try {
+      const qr = qrcode(0, 'M');
+      qr.addData(joinUrl);
+      qr.make();
+      $('share-qr').innerHTML = qr.createImgTag(5, 4);
+      shareQrDone = true;
+    } catch(_){}
+  }
+  $('share-code').textContent = slug;
+  $('share').style.display = 'flex';
+}
+function closeShare(){ $('share').style.display = 'none'; }
 
 /* ── Done / share ─────────────────────────────────── */
 function showDone(limitReached){
@@ -496,11 +622,14 @@ async function share(){
 $('shutter').addEventListener('click', capture);
 $('flip-btn').addEventListener('click', () => { facing = facing === 'user' ? 'environment' : 'user'; startCamera(); });
 $('flash-btn').addEventListener('click', toggleTorch);
-$('share-btn').addEventListener('click', share);
-$('done-share').addEventListener('click', share);
+$('share-btn').addEventListener('click', openShare);
+$('done-share').addEventListener('click', openShare);
 $('pick-btn').addEventListener('click', () => $('file-input').click());
-$('thumb').addEventListener('click', () => $('file-input').click());
+$('thumb').addEventListener('click', openMyGallery);
 $('file-input').addEventListener('change', onPick);
+$('mg-back').addEventListener('click', closeMyGallery);
+$('sh-back').addEventListener('click', closeShare);
+$('sh-link').addEventListener('click', share);
 $('pv-back').addEventListener('click', hidePreview);
 $('pv-retake').addEventListener('click', hidePreview);
 $('pv-send').addEventListener('click', send);

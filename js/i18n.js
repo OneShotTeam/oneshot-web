@@ -198,6 +198,13 @@
       'cam.shareEvent': 'Share this event',
       'cam.linkCopied': 'Link copied',
       'cam.endsAt': 'Ends {day} at {time}',
+      'cam.tooMany': 'You can only add {n} more',
+      'cam.uploadingN': 'Uploading {i}/{n}…',
+      'cam.shareTitle': 'Share the Camera',
+      'cam.shareDesc': 'Anyone can join by scanning the QR code or opening the link. No app download needed!',
+      'cam.shareLink': 'Share Link',
+      'cam.myPhotosTitle': 'Your photos',
+      'cam.noMyPhotos': 'You haven’t taken any photos yet.',
 
       /* ---- gallery.html ---- */
       'gal.loading': 'Loading gallery…',
@@ -410,6 +417,13 @@
       'cam.shareEvent': 'Bu etkinliği paylaş',
       'cam.linkCopied': 'Bağlantı kopyalandı',
       'cam.endsAt': 'Bitiş: {day} {time}',
+      'cam.tooMany': 'Yalnızca {n} fotoğraf daha ekleyebilirsiniz',
+      'cam.uploadingN': 'Yükleniyor {i}/{n}…',
+      'cam.shareTitle': 'Kamerayı Paylaş',
+      'cam.shareDesc': 'QR kodu tarayarak veya bağlantıyı açarak herkes katılabilir. Uygulama indirmeye gerek yok!',
+      'cam.shareLink': 'Bağlantıyı Paylaş',
+      'cam.myPhotosTitle': 'Fotoğraflarınız',
+      'cam.noMyPhotos': 'Henüz fotoğraf çekmediniz.',
 
       /* ---- gallery.html ---- */
       'gal.loading': 'Galeri yükleniyor…',
